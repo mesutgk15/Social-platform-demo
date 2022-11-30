@@ -1,0 +1,43 @@
+CREATE TABLE extended_families (
+    id INTEGER NOT NULL PRIMARY KEY,
+    login_name TEXT NOT NULL UNIQUE, 
+    password_hash TEXT NOT NULL, 
+    origin_country INTEGER NOT NULL, 
+    origin_city INTEGER, 
+    registration_date REAL NOT NULL
+);
+
+CREATE TABLE families (
+    id INTEGER NOT NULL PRIMARY KEY,
+    extended_family_id INTEGER,
+    login_name TEXT NOT NULL UNIQUE, 
+    password_hash TEXT NOT NULL,  
+    registration_date REAL NOT NULL,
+    FOREIGN KEY (extended_family_id) REFERENCES extended_families(id)
+); 
+
+CREATE TABLE members (
+    id INTEGER NOT NULL PRIMARY KEY,
+    extended_family_id INTEGER,
+    family_id INTEGER,
+    login_name TEXT NOT NULL UNIQUE, 
+    password_hash TEXT NOT NULL,  
+    registration_date REAL NOT NULL,
+    name TEXT NOT NULL,
+    last_name TEXT NOT NULL,
+    birth_date REAL NOT NULL,
+    email TEXT NOT NULL,
+    phone_number TEXT,
+    address TEXT,
+    living TEXT NOT NULL,
+    FOREIGN KEY (extended_family_id) REFERENCES extended_families(id)
+    FOREIGN KEY (family_id) REFERENCES families(id)
+); 
+
+
+CREATE TABLE cities (
+    id INTEGER PRIMARY KEY,
+    city TEXT NOT NULL,
+    country_id INTEGER,
+    FOREIGN KEY (country_id) REFERENCES countries(id)
+); 

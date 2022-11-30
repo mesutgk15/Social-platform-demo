@@ -1,0 +1,21 @@
+{% extends "index.html" %}
+
+{% block title %} - Confirm your email {% endblock %}
+
+{% block main %}
+
+    <h4 class="text-center mb-3">Check your mailbox to confirm your email </h4>
+    
+    <form action="/complete-registration" method="post">
+        <div class="mb-4">
+            <div class="verification-code">
+                <input type="text" autofocus autocomplete="off" class="form-control mx-auto w-auto mb-1" name ="verification-code" placeholder="Verification Code">    
+            </div>
+
+        <div class="mb-3">
+            <button class="btn btn-primary" type="submit">Complete-Registration</button>          
+        </div>
+    </form>
+
+
+{% endblock %}
