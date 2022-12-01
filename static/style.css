@@ -18,3 +18,9 @@ body {
     color: green;
     font-size: 1.3em;
 }
+
+.col {
+    border: solid;
+    border-color:teal;
+    border-width: 3px;
+}

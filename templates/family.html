@@ -5,14 +5,24 @@
 {% block main %}
 
     <h4 class="text-center mb-3">Welcome </h4>
-    
+    <div class="container">
+        <div class="row row-cols-5 mb-3">
+            <div class="col">
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{url_for('family_list', family_id=family['id']) }}">Family List</a>
+            </div>
+            <div class="col">
+                
+            </div>
+        </div>
+    </div>
     <div class="container-sm mb-3" style="border: solid;">
         <p>You are connected to the family of :    <span class="family-info">{{family['name']}}</span></p>
         <p><span class="family-info">{{family['origin_city'] | capitalize}}, </span><span class="family-info">{{family['origin_country'] | capitalize}}</span></p>
         <p>Your family has  :    <span class="family-info">{{member_count}}</span> members</p>
         <p>Your family joined Commune on :    <span class="family-info">{{date}}</span></p>
-
+        <a class="btn btn-dark mb-3"  href="{{url_for('leave_family')}}">Leave Family</a>
     </div>
 
 
 {% endblock %}
+

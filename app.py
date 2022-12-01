@@ -2,6 +2,7 @@ import os
 import sqlite3, re
 
 
+
 from flask import Flask, render_template, request, redirect, flash, session, url_for
 from flask_mail import Mail, Message
 import smtplib
@@ -9,12 +10,16 @@ from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import random
+from helpers import date
+
 
 app = Flask(__name__)
 
 app.config["TEMPLATES_AUTO_RELOAD"] = True
 
 app.config["SECRET_KEY"] = "as123124knbsdf23b2342k312"
+
+app.jinja_env.filters['date'] = date
 
 
 db = sqlite3.connect("commune.db", check_same_thread=False)
@@ -27,19 +32,44 @@ def index():
     if not session:
         return render_template("index.html")
     family_check = cur.execute("SELECT extended_family_id FROM members WHERE id = ?", (session['user_id'],)).fetchall()[0][0]
-    print(family_check)
-    return redirect(url_for('home', family_id=str(family_check)))   
+    try:
+        if family_check == session["family_id"]:
+            print(family_check)
+            return redirect(url_for('home', family_id=str(family_check)))
+        else:
+            return render_template("home.html", family_id=str(family_check))    
+    except:
+        return render_template("index.html")
 
 @app.route("/home/<family_id>", methods=["POST", "GET"])
 def home(family_id):
-    if family_id is None:
+    if family_id == "None":
         return render_template("home.html")    
     else:
         family = cur.execute("SELECT *, datetime(registration_date) FROM extended_families WHERE id = ?", (family_id)).fetchall()[0]
         member_count = cur.execute("SELECT COUNT(extended_family_id) FROM members WHERE extended_family_id = ?", family_id).fetchall()[0][0]
         date = (datetime.strptime(family["datetime(registration_date)"], '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).date()
         return render_template("family.html", family=family, member_count=member_count, date=date)
-    
+
+@app.route("/home/family/list", methods=["GET", "POST"])
+def family_list():
+    family_members = cur.execute("SELECT id, name, last_name, birth_date, datetime(registration_date) FROM members WHERE extended_family_id = ?", request.args.get('family_id'))
+    # date = (datetime.strptime(family_members["datetime(registration_date)"], '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).date()
+    return render_template("family_list.html", family_members=family_members)
+
+@app.route("/home/family/list/contact_details", methods=["POST", "GET"])
+def family_member_contact():    
+    print(request.args.get('id'))
+    contact = cur.execute("SELECT *, datetime(registration_date) FROM members WHERE id = ?", (request.args.get('id'),))
+    return render_template("family_member_contact.html", contact=contact)
+
+
+@app.route("/leave_family", methods=["POST", "GET"])
+def leave_family():
+    cur.execute("UPDATE members SET extended_family_id = ? WHERE id = ?", (None, session["user_id"]))
+    db.commit()
+    session["family_id"] = ""
+    return redirect("/")
         
          
 
@@ -128,6 +158,7 @@ def login():
                     return render_template("login.html", errors=errors, form=request.form)
                 if check_password_hash(user["password_hash"], request.form.get("password")):
                     session["user_id"] = user["id"]
+                    session["family_id"] = user["extended_family_id"]
                     print(session["user_id"])
                     return redirect("/")
                 else:
@@ -144,6 +175,7 @@ def login():
 
                 if check_password_hash(user["password_hash"], request.form.get("password")):
                     session["user_id"] = user["id"]
+                    session["family_id"] = user["extended_family_id"]
                     print(session["user_id"])
                     return redirect("/")
                 else:
@@ -251,6 +283,43 @@ def create_family():
         form = {}
         return render_template("create_family.html", errors = errors, form = form, countries=countries, cities=cities)
     
+@app.route("/join_family", methods=["GET", "POST"])
+def join_family():
+    if request.method == "POST":
+        form= {}
+        errors= {}
+        if not request.form.get("password"):
+            errors["login"] = "Passwords is required"        
+        if not request.form.get("family-login-name"):
+            errors["login"] = "Family Login Name is Required"
+        if not errors:
+            try:
+                family = cur.execute("SELECT * FROM extended_families WHERE login_name = ?", [request.form.get("family-login-name")]).fetchall()[0]
+            except:
+                errors["login"] = "Family is not found"
+                return render_template("join_family.html", form=form, errors=errors)
+            if not family:
+                errors["login"] = "Family is not found"
+            if not check_password_hash(family["password_hash"], request.form.get("password")):
+                errors["login"] = "Incorrect Password"
+            if not errors:
+                cur.execute("UPDATE members SET extended_family_id = ? WHERE id = ?", (str(family["id"]), session["user_id"]))
+                db.commit()
+                session["family_id"] = family["id"]
+                return redirect(url_for('index'))
+            else:
+                return render_template("join_family.html", form=form, errors=errors)    
+        else:
+            return render_template("join_family.html", form=form, errors=errors)    
+        
+        
+    else:
+        form= {}
+        errors= {}
+        return render_template("join_family.html", form=form, errors=errors)
+
+
+
 
 if __name__ == "__main__":
     app.run(port=8000, debug=True)

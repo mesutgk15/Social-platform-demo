@@ -1,0 +1,80 @@
+{% extends "index.html" %}
+
+{% block title %} - Home {% endblock %}
+
+{% block main %}
+
+    <h4 class="text-center mb-3">Welcome </h4>
+    <div class="container">
+        <div class="row row-cols-5 mb-3">
+            <div class="col">
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Family List</a>
+            </div>
+            <div class="col">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+
+        {% for contact in contact %}
+            <div class="card" style="width: 17rem;">
+
+                <img style="padding: 15px;" src="{{ url_for('static', filename='profile_pictures/' + (contact['id'] | string ) + '.jpg' ) }}" class="card-img-top" alt="...">
+                <div class="card-body">
+                  <h3 class="card-title">{{contact['name']}} {{contact['last_name']}}</h3>
+                  <p class="card-text mb-0">Joined:</p>
+                  <p class="card-text">{{contact['datetime(registration_date)'] | date}}</p>
+                  <p class="card-text">{{contact['email']}}</p>
+                  <p class="card-text mb-0">Phone Number:</p>
+                  {% if contact['phone_number'] %}                    
+                      <p class="card-text">{{contact['phone_number']}}</p>
+                  {% else %}
+                      <p class="card-text">-</p>
+                  {% endif %}
+                  <p class="card-text mb-0">Address:</p>
+                  {% if contact['address'] %}
+                      <p class="card-text">{{contact['address']}}</p>
+                  {% else %}
+                      <p class="card-text">-</p>
+                  {% endif %}
+                  
+                  <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
+        {% endfor %}
+
+        
+        
+        <table>
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Last Name</td>
+                    <td>Birth Date</td>
+                    <td>Phone Number</td>
+                    <td>Address</td>
+                    <td>Email</td>
+
+                </tr>
+            </thead>
+            {% for contact in contact %}
+                <tr>
+                    <td>{{contact['name']}}</td>
+                    <td>{{contact['last_name']}}</td>
+                    <td>{{contact['birth_date']}}</td>
+                    <td>{{contact['phone_number']}}</td>
+                    <td>{{contact['address']}}</td>
+                    <td>{{contact['email']}}</td>
+                </tr>
+
+            {% endfor %}
+        </table>
+        
+        
+    </div>
+
+
+
+{% endblock %}

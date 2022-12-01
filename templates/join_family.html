@@ -1,0 +1,34 @@
+{% extends "index.html" %}
+
+{% block title %} - Join Family {% endblock %}
+
+{% block main %}
+
+<h6 class="text-center mb-4">Submit the Login Name and Password of the Family</h6>
+
+<form action="{{url_for('join_family')}}" method="post">
+    <div class="mb-4">
+        <div class="family-login-name">
+                {% if form["family-login-name"] %}
+                    <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="family-login-name" value="{{form['family-login-name']}}" placeholder="Login Name *">
+                {% else %}
+                    <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="family-login-name" placeholder="Login Name *">    
+                {% endif %}
+        </div>
+
+        <div class="password">
+                {% if form["password"] %}
+                    <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" value="{{form['password']}}" placeholder="Password *">
+                {% else %}
+                    <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" placeholder="Password *">    
+                {% endif %}
+        </div>
+        {% if errors["login"] %}
+                <div class="login-error mb-3">{{errors["login"]}}</div>
+        {% endif %}
+        <div class="mb-3">
+            <button class="btn btn-primary" type="submit">Join Family</button>          
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "index.html" %}
+
+{% block title %} - Home {% endblock %}
+
+{% block main %}
+
+    <h4 class="text-center mb-3">Welcome </h4>
+    <div class="container">
+        <div class="row row-cols-5 mb-3">
+            <div class="col">
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Family List</a>
+            </div>
+            <div class="col">
+                
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        
+            <table>
+                <thead>
+                    <tr>
+                        <td>Name</td>
+                        <td>Last Name</td>
+                        <td>Birth Date</td>
+                        <td>Joined to the Commune</td>
+                        <td>Contact Details</td>
+                    </tr>
+                </thead>
+                {% for member in family_members %}
+                    <tr>
+                        <td>{{member['name']}}</td>
+                        <td>{{member['last_name']}}</td>
+                        <td>{{member['birth_date']}}</td>
+                        <td>{{member['datetime(registration_date)'] | date}}</td>
+                        <td><a class="btn btn-secondary" method="get" href="{{url_for('family_member_contact', id=member['id'] )}}">Contact</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+        
+        
+    </div>
+
+
+
+{% endblock %}
