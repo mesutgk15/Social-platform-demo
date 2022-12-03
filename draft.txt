@@ -1,10 +1,13 @@
 CREATE TABLE extended_families (
     id INTEGER NOT NULL PRIMARY KEY,
-    login_name TEXT NOT NULL UNIQUE, 
+    login_name TEXT NOT NULL UNIQUE,
+    name TEXT NOT NULL, 
     password_hash TEXT NOT NULL, 
     origin_country INTEGER NOT NULL, 
     origin_city INTEGER, 
-    registration_date REAL NOT NULL
+    registration_date REAL NOT NULL,
+    admin1 INTEGER NOT NULL,
+    FOREIGN KEY (admin1) REFERENCES members(id) 
 );
 
 CREATE TABLE families (

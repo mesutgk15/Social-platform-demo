@@ -12,21 +12,34 @@
 <body>
     <header>
         <section>
-            <nav role="navigation" class="navbar bg-light mb-5">
+            <nav role="navigation" class="navbar navbar-expand bg-light mb-5">
                 <div class="container-fluid">
-                    <a class="navbar-brand navbar-toggler" href="/"> <span>COMMUNE</span></a>
-                    <div>
+                    <a class="navbar-brand" href="/"> <span>COMMUNE</span></a>
+                    <div class="collapse navbar-collapse">
                         {% if not session["user_id"] %}
-                            <ul class="navbar-nav">
+                            <ul class="navbar-nav ms-auto">
                                 <li class="nav-item">
                                     <a href="/register" class="btn btn-light">Register</a>
                                     <a href="/login" class="btn btn-light">Login</a>
                                 </li>
                             </ul>
                         {% else %}
-                            <ul class="navbar-nav">
+                            <ul class="navbar-nav ms-auto">
+                                <li class="nav-item" style="padding: 7px; margin-right: 3px;">
+                                    <span class="navbar-text">{{session['username']}}</span>
+                                </li>
+                                <li class="nav-item" style="padding: 5px;">
+                                    {% if os.path.exists('static/profile_pictures/' + (session['user_id'] | string) + '.jpg') %}
+                                    <img width="30px" height="auto" style="border-radius: 50%;" src="{{ url_for('static', filename='profile_pictures/' + (session['user_id'] | string ) + '.jpg' ) }}">
+                                    {% else %}
+                                    <img width="30px" height="auto" style="border-radius: 50%;" src="{{ url_for('static', filename='profile_pictures/user.png') }}" alt="...">
+                                    {% endif %}
+                                </li>
                                 <li class="nav-item">
-                                    <a href="{{ url_for('logout') }}" class="btn btn-light">Logout</a>
+                                    <a href="{{ url_for('profile') }}" class="btn btn-light nav-link">Profile</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="{{ url_for('logout') }}" class="btn btn-light nav-link">Logout</a>
                                 </li>
                             </ul>
                         {% endif %}

@@ -10,7 +10,7 @@ from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import random
-from helpers import date
+from helpers import date, allowed_file
 
 
 app = Flask(__name__)
@@ -20,6 +20,11 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SECRET_KEY"] = "as123124knbsdf23b2342k312"
 
 app.jinja_env.filters['date'] = date
+
+UPLOAD_FOLDER = "static/profile_pictures/"
+
+
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
 db = sqlite3.connect("commune.db", check_same_thread=False)
@@ -40,6 +45,11 @@ def index():
             return render_template("home.html", family_id=str(family_check))    
     except:
         return render_template("index.html")
+
+@app.context_processor
+def handle_context():
+    return dict(os=os)
+
 
 @app.route("/home/<family_id>", methods=["POST", "GET"])
 def home(family_id):
@@ -125,8 +135,7 @@ def register():
 
 
             
-            # return redirect("/")
-            # print(session["user_id"])        
+    
         else:    
             return render_template("register.html", form=request.form, errors=errors)
     else:
@@ -158,6 +167,7 @@ def login():
                     return render_template("login.html", errors=errors, form=request.form)
                 if check_password_hash(user["password_hash"], request.form.get("password")):
                     session["user_id"] = user["id"]
+                    session["username"] = user["login_name"]
                     session["family_id"] = user["extended_family_id"]
                     print(session["user_id"])
                     return redirect("/")
@@ -175,6 +185,7 @@ def login():
 
                 if check_password_hash(user["password_hash"], request.form.get("password")):
                     session["user_id"] = user["id"]
+                    session["username"] = user["login_name"]
                     session["family_id"] = user["extended_family_id"]
                     print(session["user_id"])
                     return redirect("/")
@@ -230,6 +241,7 @@ def verify_email():
             cur.execute("INSERT INTO members (name, last_name, birth_date, login_name, email, password_hash, living, registration_date) VALUES (?, ?, ?, ?, ?, ?, 'TRUE', julianday('now'))",
                         (form['name'], form['last-name'], form['birth-date'], login_name, form['email'], generate_password_hash(form['password'])))
             session["user_id"] = cur.execute("SELECT id FROM members WHERE login_name = ?", [login_name]).fetchall()[0][0]
+            session["username"] = cur.execute("SELECT login_name FROM members WHERE id = ?", (session["user_id"],)).fetchall()[0][0]
             db.commit()
             session["form"] = ""           
             return redirect("/")
@@ -273,6 +285,7 @@ def create_family():
             
                         
             cur.execute("UPDATE members SET extended_family_id = ? WHERE id = ?", (cur.execute("SELECT id FROM extended_families WHERE admin1 = ?", (session["user_id"],)).fetchall()[0][0], session["user_id"]))
+            session["family_id"] = cur.execute("SELECT extended_family_id FROM members WHERE id = ?", (session["user_id"],)).fetchall()[0][0]
             db.commit()
             
             return redirect("/")
@@ -319,7 +332,35 @@ def join_family():
         return render_template("join_family.html", form=form, errors=errors)
 
 
+@app.route("/profile", methods=["GET", "POST"])
+def profile():
+    profile_data = cur.execute("SELECT *, datetime(registration_date) FROM members WHERE id = ?", (session["user_id"],))
+    return render_template("profile.html", profile_data=profile_data)
 
+
+@app.route("/upload_photo", methods=["GET", "POST"])
+def upload_photo():
+    if request.method == "POST" and request.args.get('photo') == "upload":
+        file = request.files["photo"]
+        if not file:
+            flash("No file chosen !")
+            return redirect("profile")            
+        elif not allowed_file(file.filename):
+            print(allowed_file(file.filename))
+            flash("Only JPG and JPEG files are allowed !")
+            return redirect("profile")            
+
+        print(allowed_file(file.filename))
+        filename = str((session["user_id"])) + ".jpg"
+        file.save(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+        return redirect(url_for('profile'))
+    else:
+        if request.args.get('photo') == "delete":
+            filename = str((session["user_id"])) + ".jpg"
+            os.remove(os.path.join(app.config["UPLOAD_FOLDER"], filename))
+            return redirect("profile")
+        else:
+            return redirect("profile")
 
 if __name__ == "__main__":
     app.run(port=8000, debug=True)

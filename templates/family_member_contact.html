@@ -4,22 +4,21 @@
 
 {% block main %}
 
-    <h4 class="text-center mb-3">Welcome </h4>
     <div class="container">
         <div class="row row-cols-5 mb-3">
             <div class="col">
                 <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Family List</a>
             </div>
             <div class="col">
-                
+
             </div>
         </div>
     </div>
 
-    <div class="container">
+    <div class="d-flex justify-content-center">
 
         {% for contact in contact %}
-            <div class="card" style="width: 17rem;">
+            <div class="card mb-5" style="width: 17rem;">
 
                 <img style="padding: 15px;" src="{{ url_for('static', filename='profile_pictures/' + (contact['id'] | string ) + '.jpg' ) }}" class="card-img-top" alt="...">
                 <div class="card-body">
@@ -44,34 +43,6 @@
                 </div>
             </div>
         {% endfor %}
-
-        
-        
-        <table>
-            <thead>
-                <tr>
-                    <td>Name</td>
-                    <td>Last Name</td>
-                    <td>Birth Date</td>
-                    <td>Phone Number</td>
-                    <td>Address</td>
-                    <td>Email</td>
-
-                </tr>
-            </thead>
-            {% for contact in contact %}
-                <tr>
-                    <td>{{contact['name']}}</td>
-                    <td>{{contact['last_name']}}</td>
-                    <td>{{contact['birth_date']}}</td>
-                    <td>{{contact['phone_number']}}</td>
-                    <td>{{contact['address']}}</td>
-                    <td>{{contact['email']}}</td>
-                </tr>
-
-            {% endfor %}
-        </table>
-        
         
     </div>
 

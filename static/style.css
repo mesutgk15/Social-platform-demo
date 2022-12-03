@@ -24,3 +24,8 @@ body {
     border-color:teal;
     border-width: 3px;
 }
+
+.error-flash {
+    color: red;
+    font-size: large;
+}
