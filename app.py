@@ -362,5 +362,24 @@ def upload_photo():
         else:
             return redirect("profile")
 
+@app.route("/profile/update/", methods=["GET", "POST"])
+def update_profile_info():
+    if request.method == "POST" and request.args.get('update') == "address":
+        cur.execute("UPDATE members SET address = ? WHERE id = ?", [request.form.get("address-text"), session["user_id"]])
+        db.commit()
+        return redirect("/profile")
+    elif request.args.get('update') == "delete-address":
+        cur.execute("UPDATE members SET address = ? WHERE id = ?",  (None, session["user_id"]))
+        db.commit()
+        return redirect("/profile")
+    elif request.method == "POST" and request.args.get('update') == "phone_number":
+        cur.execute("UPDATE members SET phone_number = ? WHERE id = ?", [request.form.get("phone_number"), session["user_id"]])
+        db.commit()
+        return redirect("/profile")
+    elif request.args.get('update') == "delete-phone_number":
+        cur.execute("UPDATE members SET phone_number = ? WHERE id = ?",  (None, session["user_id"]))
+        db.commit()
+        return redirect("/profile")        
+
 if __name__ == "__main__":
     app.run(port=8000, debug=True)

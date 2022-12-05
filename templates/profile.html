@@ -2,6 +2,8 @@
 
 {% block title %} - Home {% endblock %}
 
+{%block body_id %}profile{% endblock %}
+
 {% block main %}
 
     {% if get_flashed_messages %}
@@ -18,11 +20,14 @@
 
     {% endif %}
 
-    <h4 class="text-center mb-3">Profile </h4>
+    <h4 style="font-weight: lighter;" class="mb-3">Profile Details</h4>
+
     {% for profile_data in profile_data %}
-    <div>
-        <div style="border: solid; width: 60vw;" class="container profile-section">
-            <div class="profile-section mt-3">Profile Picture</div>
+
+    <!-- Profile Picture -->
+    <div class="container mb-5">
+        <div class="container p-3 profile-container">
+            <h5 class="profile-section">Profile Picture</h5>
             {% if os.path.exists('static/profile_pictures/' + (session['user_id'] | string) + '.jpg') %}
                 <img style="padding-top: 15px; padding-bottom: 15px; width: 5rem;" src="{{ url_for('static', filename='profile_pictures/' + (session['user_id'] | string ) + '.jpg' ) }}" class="card-img-top" alt="...">
             {% else %}
@@ -34,35 +39,66 @@
                     <button class="input-group-text" type="submit">Upload</button>        
                 </div>
             </form>
-            <a style="height: 3em; width: 5em;" class="btn btn-outline-danger btn-sm mb-3" href="{{ url_for('upload_photo', photo='delete') }}">Delete</a>
+            <a style="width: 5em;" class="btn btn-outline-danger btn-sm mb-3" href="{{ url_for('upload_photo', photo='delete') }}">Delete</a>
         </div>
         
-        <div style="border: solid; width: 60vw;" class="container profile-section">
-            <span class="profile-section">Address:</span>
+        <!-- Address -->
+        <div class="container p-3 profile-container">
+            <h5 class="profile-section">Address:</h5>
             {% if profile_data['address'] %}
-                <span>{{profile_data['address']}}</span>
+                <span class="profile-data">{{profile_data['address']}}</span><br>
             {% else %}
-                <span></span>
+                <span></span><br>
             {% endif %}
-            <a style="height: 3em; width: 8em; margin-inline-start: 30em; margin-top: 15px; margin-bottom: 15px;" class="btn btn-outline-primary btn-sm" href="http://">Update</a>
-            <a style="height: 3em; width: 5em;" class="btn btn-outline-danger btn-sm" href="http://">Delete</a>
+            <div class="">
+                <a style="width: 5em; margin-top: 15px; margin-bottom: 15px;" class="btn btn-outline-primary btn-sm" id="update_address">Update</a>
+                <a style="width: 5em;" class="btn btn-outline-danger btn-sm" href="{{ url_for('update_profile_info', update='delete-address') }}">Delete</a>
+            </div>
         </div>
-        <div style="border: solid; width: 60vw;" class="container profile-section">
-            <span class="profile-section">Phone Number:</span>
-            {% if profile_data['phone_number'] %}
-                <span>{{profile_data['phone_number']}}</span>
-            {% else %}
-                <span></span>
-            {% endif %}
-            <a style="height: 3em; width: 8em; margin-inline-start: 26.5em; margin-top: 15px; margin-bottom: 15px;" class="btn btn-outline-primary btn-sm" href="http://">Update</a>
-            <a style="height: 3em; width: 5em;" class="btn btn-outline-danger btn-sm" href="http://">Delete</a>
-        </div>
-        <div style="border: solid; width: 60vw; padding: 15px;" class="container profile-section">
-            <span class="profile-section">Email:</span>
-            <span style="margin-inline-start: 25em;">{{profile_data['email']}}</span>
 
+        <!-- Phone Number -->
+        <div class="container p-3 profile-container">
+            <h5 class="profile-section">Phone Number:</h5>
+            {% if profile_data['phone_number'] %}
+                <span class="profile-data">{{profile_data['phone_number']}}</span><br>
+            {% else %}
+                <span></span><br>
+            {% endif %}
+            <a style="width: 5em; margin-top: 15px; margin-bottom: 15px;" class="btn btn-outline-primary btn-sm" id="update_phone_number">Update</a>
+            <a style="width: 5em;" class="btn btn-outline-danger btn-sm" href="{{ url_for('update_profile_info', update='delete-phone_number') }}">Delete</a>
         </div>
+
+        <!-- Email -->
+        <div class="container p-3 profile-container">
+            <h5 class="profile-section">Email:</h5>
+            <span class="profile-data">{{profile_data['email']}}</span>
+        </div>
+
     </div>
     {% endfor %}
 
+    <div class="modal fade" id="updateModal" tabindex="-1" aria-labelledby="exampleModalLabel"  aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h1 class="modal-title fs-5" id="modal-title"></h1>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="" id="contact-info-update-form" method="post">
+                <div class="modal-body">    
+                    <div class="mb-3">
+                        <label for="message-text" id="modal-title-2"class="col-form-label"></label>
+                        <textarea class="form-control" name="" id="update-text"></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>                
+          </div>
+        </div>
+    </div>
+
 {% endblock %}
+

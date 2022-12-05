@@ -1,5 +1,9 @@
 body {
-    font-family: Georgia, serif;
+    font-family: Georgia, serif; 
+}
+
+body#profile {
+    background-color: whitesmoke;
 }
 
 .register-error, .login-error {
@@ -28,4 +32,35 @@ body {
 .error-flash {
     color: red;
     font-size: large;
+}
+
+.profile-section {
+    padding-top: 10px;
+    color: #14471E;
+}
+
+h4 {
+    color: #14471E;
+}
+
+.profile-data {
+    color: #68904D;   
+}
+
+.navbar-expand {
+    background-color: #C8D2D1;
+}
+
+.navbar {
+    background-color: #E4E4E5;
+}
+
+.profile-container {
+    max-width: 60vw;
+    border-width: 1px;
+    border-style: dotted;
+}
+
+#nav-username {
+    font-weight: 600;
 }
