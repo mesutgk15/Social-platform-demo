@@ -7,17 +7,19 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <script src="../static/jquery.js"></script>
-    <script defer src="../static/modal.js"></script>
+    {% block script %}{% endblock %}
     <title>Commune {% block title %} {% endblock %}</title>
 </head>
 <body id="{%block body_id %} {% endblock %}">
     <header>
         <section>
-            <nav role="navigation" class="navbar navbar-expand mb-5">
+            <nav role="navigation" class="navbar border navbar-expand-md mb-5">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="/"> <span>COMMUNE</span></a>
-                    <div class="collapse navbar-collapse">
+                    <button aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation" class="navbar-toggler" data-bs-target="#navbar" data-bs-toggle="collapse" type="button">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div id="navbar" class="collapse navbar-collapse">
                         {% if not session["user_id"] %}
                             <ul class="navbar-nav ms-auto">
                                 <li class="nav-item">
@@ -32,9 +34,9 @@
                                 </li>
                                 <li class="nav-item" style="padding: 5px;">
                                     {% if os.path.exists('static/profile_pictures/' + (session['user_id'] | string) + '.jpg') %}
-                                    <img width="30px" height="auto" style="border-radius: 50%;" src="{{ url_for('static', filename='profile_pictures/' + (session['user_id'] | string ) + '.jpg' ) }}">
+                                    <img width="30vw" height="auto" style="border-radius: 50%;" src="{{ url_for('static', filename='profile_pictures/' + (session['user_id'] | string ) + '.jpg' ) }}">
                                     {% else %}
-                                    <img width="30px" height="auto" style="border-radius: 50%;" src="{{ url_for('static', filename='profile_pictures/user.png') }}" alt="...">
+                                    <img width="30vw" height="auto" style="border-radius: 50%;" src="{{ url_for('static', filename='profile_pictures/user.png') }}" alt="...">
                                     {% endif %}
                                 </li>
                                 <li class="nav-item">
@@ -58,7 +60,7 @@
     </main>
 
     <footer>
-        <nav class="navbar">
+        <nav class="navbar fixed-bottom">
             <div class="container-fluid">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">

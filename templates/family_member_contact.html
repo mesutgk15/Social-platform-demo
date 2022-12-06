@@ -5,12 +5,15 @@
 {% block main %}
 
     <div class="container">
-        <div class="row row-cols-5 mb-3">
+        <div class="row row-cols-3 mb-3">
             <div class="col">
                 <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Family List</a>
             </div>
             <div class="col">
-
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Wall</a>
+            </div>
+            <div class="col">
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Polls</a>
             </div>
         </div>
     </div>
@@ -18,21 +21,25 @@
     <div class="d-flex justify-content-center">
 
         {% for contact in contact %}
-            <div class="card mb-5" style="width: 17rem;">
+            <div class="card mb-5" style="width: 15rem">
 
-                <img style="padding: 15px;" src="{{ url_for('static', filename='profile_pictures/' + (contact['id'] | string ) + '.jpg' ) }}" class="card-img-top" alt="...">
+                {% if os.path.exists('static/profile_pictures/' + (contact['id'] | string) + '.jpg') %}
+                    <img style="padding: 15px;" src="{{ url_for('static', filename='profile_pictures/' + (contact['id'] | string ) + '.jpg' ) }}" class="card-img-top" alt="...">
+                {% else %}
+                    <img style="padding: 15px;" src="{{ url_for('static', filename='profile_pictures/user.png') }}" class="card-img-top" alt="...">
+                {% endif %}
                 <div class="card-body">
-                  <h3 class="card-title">{{contact['name']}} {{contact['last_name']}}</h3>
-                  <p class="card-text mb-0">Joined:</p>
+                  <h4 class="card-title">{{contact['name']}} {{contact['last_name']}}</h4>
+                  <h6 class="card-text mb-0">Joined:</h6>
                   <p class="card-text">{{contact['datetime(registration_date)'] | date}}</p>
                   <p class="card-text">{{contact['email']}}</p>
-                  <p class="card-text mb-0">Phone Number:</p>
+                  <h6 class="card-text mb-0">Phone Number:</h6>
                   {% if contact['phone_number'] %}                    
                       <p class="card-text">{{contact['phone_number']}}</p>
                   {% else %}
                       <p class="card-text">-</p>
                   {% endif %}
-                  <p class="card-text mb-0">Address:</p>
+                  <h6 class="card-text mb-0">Address:</h6>
                   {% if contact['address'] %}
                       <p class="card-text">{{contact['address']}}</p>
                   {% else %}

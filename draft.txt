@@ -46,6 +46,6 @@ CREATE TABLE cities (
 ); 
 
 UPDATE members
-SET extended_family_id = NULL
+SET address = NULL
 WHERE 
-    id = 40;
+    id < 40;

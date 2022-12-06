@@ -4,12 +4,13 @@ import sqlite3, re
 
 
 from flask import Flask, render_template, request, redirect, flash, session, url_for
+from flask_session import Session
 from flask_mail import Mail, Message
 import smtplib
 from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
-import random
+import random, time
 from helpers import date, allowed_file
 
 
@@ -26,10 +27,22 @@ UPLOAD_FOLDER = "static/profile_pictures/"
 
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
 
 db = sqlite3.connect("commune.db", check_same_thread=False)
 db.row_factory = sqlite3.Row
 cur = db.cursor()
+
+@app.after_request
+def after_request(response):
+    # Ensure responses aren't cached
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Expires"] = 0
+    response.headers["Pragma"] = "no-cache"
+    return response
 
 @app.route("/")
 def index():
@@ -127,14 +140,7 @@ def register():
             token = send_email()
             print(token)
             session["token"] = token
-            return render_template("verify_email.html")
-
-
-            
-
-
-
-            
+            return render_template("verify_email.html")            
     
         else:    
             return render_template("register.html", form=request.form, errors=errors)
@@ -382,4 +388,4 @@ def update_profile_info():
         return redirect("/profile")        
 
 if __name__ == "__main__":
-    app.run(port=8000, debug=True)
+    app.run(port=8000, debug=True, threaded=True)

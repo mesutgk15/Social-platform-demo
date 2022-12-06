@@ -6,35 +6,38 @@
 
     <h4 class="text-center mb-3">Welcome </h4>
     <div class="container">
-        <div class="row row-cols-5 mb-3">
+        <div class="row row-cols-3 mb-5">
             <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Family List</a>
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Member List</a>
             </div>
             <div class="col">
-                
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Wall</a>
+            </div>
+            <div class="col">
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Polls</a>
             </div>
         </div>
     </div>
 
     <div class="container">
         
-            <table class="table">
-                <thead>
+            <table class="table table-striped table-sm">
+                <thead class="table-success">
                     <tr>
-                        <td>Name</td>
-                        <td>Last Name</td>
-                        <td>Birth Date</td>
-                        <td>Joined to the Commune</td>
-                        <td>Contact Details</td>
+                        <th>Name</th>
+                        <th>Last Name</th>
+                        <th>Birth Date</th>
+                        <th>Joined to the Commune</th>
+                        <th>Contact Details</th>
                     </tr>
                 </thead>
                 {% for member in family_members %}
-                    <tr>
+                    <tr class="table-success">
                         <td>{{member['name']}}</td>
                         <td>{{member['last_name']}}</td>
                         <td>{{member['birth_date']}}</td>
                         <td>{{member['datetime(registration_date)'] | date}}</td>
-                        <td><a class="btn btn-secondary" method="get" href="{{url_for('family_member_contact', id=member['id'] )}}">Contact</a></td>
+                        <td><a class="btn btn-secondary btn-sm" method="get" href="{{url_for('family_member_contact', id=member['id'] )}}">Contact</a></td>
                     </tr>
                 {% endfor %}
             </table>

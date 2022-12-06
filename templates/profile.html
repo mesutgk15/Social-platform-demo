@@ -2,6 +2,11 @@
 
 {% block title %} - Home {% endblock %}
 
+{% block script %}
+    <script src="{{url_for('static', filename='jquery.js')}}"></script>
+    <script defer src="{{url_for('static', filename='modal.js')}}"></script>
+{% endblock %}
+
 {%block body_id %}profile{% endblock %}
 
 {% block main %}

@@ -1,10 +1,26 @@
 body {
     font-family: Georgia, serif; 
+    font-size: calc(7px + 0.8vw);
 }
+
+header {
+    font-size: calc(4px + 0.7vw);
+}  
+
+
+footer {
+    font-size: calc(1px + 1vw);
+}  
 
 body#profile {
     background-color: whitesmoke;
 }
+
+body#family {
+    background-color: #EE9B01;
+}
+
+
 
 .register-error, .login-error {
     color: red;
@@ -19,14 +35,17 @@ body#profile {
 
 .family-info{
     font-weight: bold;
-    color: green;
+    color: #68904D;
     font-size: 1.3em;
 }
 
 .col {
-    border: solid;
-    border-color:teal;
-    border-width: 3px;
+    
+    border-style: groove;
+    border-color: #68904D;
+    
+    
+    
 }
 
 .error-flash {
