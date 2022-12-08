@@ -2,6 +2,11 @@
 
 {% block title %} - Register {% endblock %}
 
+{% block script %}
+    <script src="{{url_for('static', filename='jquery.js')}}"></script>
+    <script     src="{{url_for('static', filename='country-change.js')}}"></script>
+{% endblock %}
+
 {% block main %}
 
     <h4 class="text-center mb-3">CREATE YOUR FAMILY AT COMMUNE</h4>
@@ -49,60 +54,53 @@
 
             <div class="country">
                 {% if errors["country"] %} 
-                    <select name="country"  id="country" class="form-select mx-auto w-auto mb-1">
+                    <select name="country"  id="country" class="form-select mx-auto w-auto mb-1" onchange="getCities(this.value)">
                         <option disabled selected>Select Origin Country For Your Family</option>
                         {% for country in countries %}
-                            <option value="{{country[0]}}">{{country[0] | capitalize}}</option>
+                            <option value="{{country[0]}}">{{country[0] | title}}</option>
                         {% endfor %}
                     </select>       
                     <div class="register-error mb-3">{{errors["country"]}}</div>                 
                 {% else %}
                     {% if form["country"] %}
-                        <select name="country"  id="country" class="form-select mx-auto w-auto mb-3">
+                        <select name="country"  id="country" class="form-select mx-auto w-auto mb-3" onchange="getCities(this.value)">
                             <option disabled>Select Origin Country For Your Family</option>
-                            <option selected value="{{form['country']}}">{{form['country'] | capitalize}}</option>
+                            <option selected value="{{form['country']}}">{{form['country'] | title}}</option>
                             {% for country in countries %}
-                                <option value="{{country[0]}}">{{country[0] | capitalize}}</option>
+                                <option value="{{country[0]}}">{{country[0] | title}}</option>
                             {% endfor %}
+                        </select>
                     {% else %}
-                        <select name="country"  id="country" class="form-select mx-auto w-auto mb-3">
+                        <select name="country"  id="country" class="form-select mx-auto w-auto mb-3" onchange="getCities(this.value)">
                             <option selected disabled>Select Origin Country For Your Family</option>
                         {% for country in countries %}
-                            <option value="{{country[0]}}">{{country[0] | capitalize}}</option>
+                            <option value="{{country[0]}}">{{country[0] | title}}</option>
                         {% endfor %}
                         </select>
                     {% endif %}
                 {% endif %}  
             </div>
 
-
             <div class="city">
                 {% if errors["city"] %} 
-                    <select name="city"  id="city" class="form-select mx-auto w-auto mb-1">
-                        <option disabled selected>Select Origin City For Your Family</option>
-                        {% for city in cities %}
-                            <option value="{{city[0]}}">{{city[0] | capitalize}}</option>
-                        {% endfor %}
+                    <select name="city" class="form-select mx-auto w-auto mb-1 city-op">
+                        <option class="saved" disabled selected>Select Origin City For Your Family</option>
                     </select>       
                     <div class="register-error mb-3">{{errors["city"]}}</div>                 
                 {% else %}
                     {% if form["city"] %}
-                        <select name="city"  id="city" class="form-select mx-auto w-auto mb-3">
-                            <option disabled>Select Origin City For Your Family</option>
+                        <select name="city" class="form-select mx-auto w-auto mb-3 city-op">
+                            <option class="saved" disabled>Select Origin City For Your Family</option>
                             <option selected value="{{form['city']}}">{{form['city'] | capitalize}}</option>
-                            {% for city in cities %}
-                                <option value="{{city[0]}}">{{city[0] | capitalize}}</option>
-                            {% endfor %}
+                        </select>
                     {% else %}
-                        <select name="city"  id="city" class="form-select mx-auto w-auto mb-3">
-                            <option selected disabled>Select Origin City For Your Family</option>
-                        {% for city in cities %}
-                            <option value="{{city[0]}}">{{city[0] | capitalize}}</option>
-                        {% endfor %}
+                        <select name="city" class="form-select mx-auto w-auto mb-3 city-op">
+                            <option class="saved" selected disabled>Select Origin City For Your Family</option>
                         </select>
                     {% endif %}
-                {% endif %}  
+                {% endif %} 
             </div>
+
 
 
             <div class="password">

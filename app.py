@@ -3,7 +3,7 @@ import sqlite3, re
 
 
 
-from flask import Flask, render_template, request, redirect, flash, session, url_for
+from flask import Flask, render_template, request, redirect, flash, session, url_for, json, jsonify
 from flask_session import Session
 from flask_mail import Mail, Message
 import smtplib
@@ -266,7 +266,6 @@ def verify_email():
 @app.route("/create-family", methods=["GET", "POST"])
 def create_family():
     countries = cur.execute("SELECT country FROM countries ORDER BY country").fetchall()
-    cities = cur.execute("SELECT city FROM cities ORDER BY city").fetchall()
     if request.method == "POST":
         errors = {}
         familyname_check = cur.execute("SELECT * FROM extended_families WHERE login_name = ?", [request.form.get("family-login-name")]).fetchall()
@@ -296,11 +295,11 @@ def create_family():
             
             return redirect("/")
         else:
-            return render_template("create_family.html", errors=errors, form=request.form, countries=countries, cities=cities)
+            return render_template("create_family.html", errors=errors, form=request.form, countries=countries)
     else:
         errors = {}
         form = {}
-        return render_template("create_family.html", errors = errors, form = form, countries=countries, cities=cities)
+        return render_template("create_family.html", errors = errors, form = form, countries=countries)
     
 @app.route("/join_family", methods=["GET", "POST"])
 def join_family():
@@ -385,7 +384,16 @@ def update_profile_info():
     elif request.args.get('update') == "delete-phone_number":
         cur.execute("UPDATE members SET phone_number = ? WHERE id = ?",  (None, session["user_id"]))
         db.commit()
-        return redirect("/profile")        
+        return redirect("/profile")  
+
+@app.route("/get-city/")
+def get_city():
+    country = request.args.get('country')
+    country_id = cur.execute("SELECT id from countries WHERE country = ?", [country]).fetchall()[0][0]
+    city = cur.execute("SELECT city FROM cities WHERE country_id = ?", [country_id]).fetchall()
+    cities = [dict(row) for row in city]
+    print(jsonify(cities))
+    return jsonify(cities)
 
 if __name__ == "__main__":
     app.run(port=8000, debug=True, threaded=True)

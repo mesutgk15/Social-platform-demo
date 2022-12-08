@@ -6,7 +6,9 @@
 
     <h4 class="text-center mb-3">REGISTER</h4>
 
-     <div class="register-error mb-3">{{errors["email_verification_fail"]}}</div>
+    {% if errors["email_verification_fail"] %}
+        <div class="register-error mb-3">{{errors["email_verification_fail"]}}</div>
+    {% endif %}
     
     <form action="/register" method="post">
         <div class="mb-4">
