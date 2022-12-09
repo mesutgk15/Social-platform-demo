@@ -11,7 +11,7 @@ from email.message import EmailMessage
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import random, time
-from helpers import date, allowed_file
+from helpers import date, allowed_file, time_filter
 
 
 app = Flask(__name__)
@@ -21,6 +21,7 @@ app.config["TEMPLATES_AUTO_RELOAD"] = True
 app.config["SECRET_KEY"] = "as123124knbsdf23b2342k312"
 
 app.jinja_env.filters['date'] = date
+app.jinja_env.filters['time'] = time_filter
 
 UPLOAD_FOLDER = "static/profile_pictures/"
 
@@ -77,7 +78,6 @@ def home(family_id):
 @app.route("/home/family/list", methods=["GET", "POST"])
 def family_list():
     family_members = cur.execute("SELECT id, name, last_name, birth_date, datetime(registration_date) FROM members WHERE extended_family_id = ?", request.args.get('family_id'))
-    # date = (datetime.strptime(family_members["datetime(registration_date)"], '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).date()
     return render_template("family_list.html", family_members=family_members)
 
 @app.route("/home/family/list/contact_details", methods=["POST", "GET"])
@@ -85,6 +85,128 @@ def family_member_contact():
     print(request.args.get('id'))
     contact = cur.execute("SELECT *, datetime(registration_date) FROM members WHERE id = ?", (request.args.get('id'),))
     return render_template("family_member_contact.html", contact=contact)
+
+@app.route("/wall", methods=["POST", "GET"])
+def wall():
+    if request.method == "POST":
+        cur.execute("INSERT INTO posts (extended_family_id, author, content, timestamp) VALUES(?, ?, ?, julianday('now'))", ((session["family_id"]), (session["user_id"]), request.form.get("postContent")))
+        db.commit()
+        return redirect("/wall")
+    else:
+        posts = cur.execute("SELECT *, datetime(timestamp) FROM posts WHERE extended_family_id = ? ORDER BY timestamp DESC", (session["family_id"],)).fetchall()
+        dictrows = [dict(row) for row in posts]
+        for r in dictrows:
+            r["like-count"] = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike = 'LIKE'", (r["id"],)).fetchall()[0][0]
+            r["dislike-count"] = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike = 'DISLIKE'", (r["id"],)).fetchall()[0][0]
+            try:
+                r["like-status"] = cur.execute("SELECT like_dislike FROM likes WHERE post_id = ? AND user_id = ?", (r["id"], session["user_id"])).fetchall()[0][0]
+            except:
+                r["like-status"] = None
+            r["author-name"] = cur.execute("SELECT name FROM members WHERE id =?", (r["author"],)).fetchall()[0][0]
+            r["author-lastName"] = cur.execute("SELECT last_name FROM members WHERE id =?", (r["author"],)).fetchall()[0][0]
+
+        
+        return render_template("wall.html", posts=dictrows)
+
+@app.route("/update-likes/")
+def update_likes():
+    post_id = request.args.get('post-id')
+    print(request.args.get('like_dislike'))
+    if request.args.get('like_dislike') == 'like':        
+        try:
+            if cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0] == "LIKE":
+                cur.execute("UPDATE likes SET like_dislike = ?, timestamp = julianday('now') WHERE user_id = ? AND post_id = ?", (None, session["user_id"], post_id))
+                db.commit()
+                like_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='LIKE'", (post_id,)).fetchall()[0][0]
+                dislike_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='DISLIKE'", (post_id,)).fetchall()[0][0]
+                like_status = cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0]
+                data = {'like_count': like_count, 
+                        'dislike_count': dislike_count,
+                        'like_status': like_status,
+                        }
+                print("a")
+                return jsonify(data)
+            elif cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0] == "DISLIKE" or \
+            cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0] == None:
+                cur.execute("UPDATE likes SET like_dislike = 'LIKE', timestamp = julianday('now') WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id))
+                db.commit()
+                like_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='LIKE'", (post_id,)).fetchall()[0][0]
+                dislike_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='DISLIKE'", (post_id,)).fetchall()[0][0]
+                like_status = cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0]
+                data = {'like_count': like_count, 
+                        'dislike_count': dislike_count,
+                        'like_status': like_status,
+                        } 
+                print("b")
+                return jsonify(data)
+        except:
+            try:
+                if cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0]:
+                    like_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='LIKE'", (post_id,)).fetchall()[0][0] 
+                    return jsonify(like_count), 400
+            except:
+                cur.execute("INSERT INTO likes (post_id, user_id, like_dislike, timestamp) VALUES (?, ?, 'LIKE', julianday('now'))", (post_id, session["user_id"]))
+                db.commit()
+                print("c")
+                like_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='LIKE'", (post_id,)).fetchall()[0][0]
+                dislike_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='DISLIKE'", (post_id,)).fetchall()[0][0]      
+                like_status = cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0]          
+                data = {'like_count': like_count, 
+                        'dislike_count': dislike_count,
+                        'like_status': like_status,
+                        } 
+                print(like_count) 
+                return jsonify(data)
+
+        
+    else:
+        try:
+            if cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0] == "DISLIKE":
+                cur.execute("UPDATE likes SET like_dislike = ?, timestamp = julianday('now') WHERE user_id = ? AND post_id = ?", (None, session["user_id"], post_id))
+                db.commit()
+                dislike_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='DISLIKE'", (post_id,)).fetchall()[0][0]
+                like_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='LIKE'", (post_id,)).fetchall()[0][0]
+                like_status = cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0]
+                data = {'like_count': like_count, 
+                        'dislike_count': dislike_count,
+                        'like_status': like_status,
+                        }                 
+                print("a")
+                return jsonify(data)
+            elif cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0] == "LIKE" or \
+            cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0] == None:
+                cur.execute("UPDATE likes SET like_dislike = 'DISLIKE', timestamp = julianday('now') WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id))
+                db.commit()
+                dislike_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='DISLIKE'", (post_id,)).fetchall()[0][0]
+                like_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='LIKE'", (post_id,)).fetchall()[0][0]
+                like_status = cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0]
+                data = {'like_count': like_count, 
+                        'dislike_count': dislike_count,
+                        'like_status': like_status,
+                        }            
+                print("b")
+                return jsonify(data)
+        except:
+            try:
+                if cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0]:
+                    dislike_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='DISLIKE'", (post_id,)).fetchall()[0][0] 
+                    return jsonify(dislike_count), 400
+            except:
+                cur.execute("INSERT INTO likes (post_id, user_id, like_dislike, timestamp) VALUES (?, ?, 'DISLIKE', julianday('now'))", (post_id, session["user_id"]))
+                db.commit()
+                print("c")
+                dislike_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='DISLIKE'", (post_id,)).fetchall()[0][0]
+                like_count = cur.execute("SELECT COUNT(*) FROM likes WHERE post_id = ? AND like_dislike ='LIKE'", (post_id,)).fetchall()[0][0]
+                like_status = cur.execute("SELECT like_dislike FROM likes WHERE user_id = ? AND post_id = ?", (session["user_id"], post_id)).fetchall()[0][0]
+                data = {'like_count': like_count, 
+                        'dislike_count': dislike_count,
+                        'like_status': like_status,
+                        }            
+                print(dislike_count) 
+                return jsonify(data)
+            
+
+
 
 
 @app.route("/leave_family", methods=["POST", "GET"])

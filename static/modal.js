@@ -13,3 +13,7 @@ $("#update_phone_number").on("click", function() {
     $("#update-text").attr("name", "phone_number") 
     $("#updateModal").modal("show");
 });
+
+$("#newPost").on("click", function() {
+    $("#newPostModal").modal("show");
+});

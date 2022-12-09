@@ -49,3 +49,26 @@ UPDATE members
 SET address = NULL
 WHERE 
     id < 40;
+
+
+CREATE TABLE posts (
+    id INTEGER NOT NULL PRIMARY KEY,
+    extended_family_id INTEGER,
+    family_id INTEGER,
+    author INTEGER,
+    content TEXT NOT NULL, 
+    timestamp REAL NOT NULL,
+    FOREIGN KEY (extended_family_id) REFERENCES extended_families(id)
+    FOREIGN KEY (family_id) REFERENCES families(id)
+    FOREIGN KEY (author) REFERENCES members(id)
+); 
+
+CREATE TABLE likes (
+    id INTEGER NOT NULL PRIMARY KEY,
+    post_id INTEGER,
+    user_id INTEGER,
+    timestamp REAL NOT NULL,
+    like_dislike TEXT,
+    FOREIGN KEY (post_id) REFERENCES posts(id)
+    FOREIGN KEY (user_id) REFERENCES members(id)
+); 

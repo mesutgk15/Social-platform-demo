@@ -75,3 +75,29 @@ h4 {
 #nav-username {
     font-weight: 600;
 }
+
+.post-time {
+    font-style: italic;
+    font-size: 0.8em;
+}
+
+.post-header {
+    font-size: 0.9em;
+}
+
+.post-footer {
+    font-size: 0.9em;
+}
+
+.post-wrapper {
+    background-color: #e1ad6d;
+}
+
+.posts {
+    background-color: #ffdd8a;
+}
+
+.post-content {
+    
+}
+

@@ -4,7 +4,7 @@
 
 {% block script %}
     <script src="{{url_for('static', filename='jquery.js')}}"></script>
-    <script     src="{{url_for('static', filename='country-change.js')}}"></script>
+    <script src="{{url_for('static', filename='country-change.js')}}"></script>
 {% endblock %}
 
 {% block main %}
@@ -51,7 +51,7 @@
                 {% endif %}
             </div>
             
-
+            <!-- On changes triggers getCities from country-change.js to list the cities from selected -->
             <div class="country">
                 {% if errors["country"] %} 
                     <select name="country"  id="country" class="form-select mx-auto w-auto mb-1" onchange="getCities(this.value)">
