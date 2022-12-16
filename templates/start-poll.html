@@ -1,0 +1,78 @@
+{% extends "index.html" %}
+
+{% block title %} - Start New Poll {% endblock %}
+
+{% block script %}
+    <script src="{{url_for('static', filename='jquery.js')}}"></script>
+    <script defer src="{{url_for('static', filename='modal.js')}}"></script>
+    <script defer src="{{url_for('static', filename='createPoll.js')}}"></script>
+{% endblock %}
+
+{% block main %}
+
+{% if get_flashed_messages %}
+
+{% with messages = get_flashed_messages() %}
+
+    {% for message in messages %}
+
+    <div class="alert alert-warning alert-dismissible fade show w-50 container" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    {% endfor %}
+
+{% endwith %}
+
+{% endif %}
+
+<div style="border: solid" class="container post-wrapper">
+
+    <div class="header">Start a Poll</div>
+
+    <div style="border: solid" class="polls p-3">
+        <form action="{{url_for('start_poll')}}" class="form-control" method="post">
+            <div id="lastDate-container" class="d-flex justify-content-center gap-5 mb-2">
+                <label class="mt-2" for="poll-lastDate">Active Until</label>
+                <input type="date" autocomplete="off" name="last_date" class="form-control w-auto" id="poll-lastDate">
+            </div>
+            <div id="maxSelection-container" class="d-flex justify-content-center gap-5 mb-2">
+                <label class="mt-2" for="poll-maxSelection">Max. Selections</label>
+                <input type="number" autocomplete="off" name="max_selection" class="form-control w-auto" id="poll-maxSelection">
+            </div>
+            {% if form['question'] %}
+                <div id="question-container" class="d-flex justify-content-center gap-5">
+                    <label class="mt-2" for="poll-question">Question</label>
+                    <input type="text" autocomplete="off" name="question" class="form-control w-75" id="poll-question" value="{{form['question']}}">
+                </div>
+            {% else %}
+                <div id="question-container" class="d-flex justify-content-center gap-5">
+                    <label class="mt-2" for="poll-question">Question</label>
+                    <input type="text" autocomplete="off" name="question" class="form-control w-75" id="poll-question">
+                </div>
+            {% endif %}
+            
+            <div class="selections">
+            
+                {% for selection in selections %}
+
+                <div class='selection-container d-flex justify-content-center gap-5 mt-2' rank="{{loop.index0}}">
+                    <label class='mt-2' for='poll-selection-{{loop.index0}}'>Selection-{{loop.index0+1}}</label>
+                    <input type='text' autocomplete='off' name="selection-{{loop.index0}}" class='form-control w-50' id='poll-selection-{{loop.index0}}' value="{{selection}}"></input>
+                    <button type='button' class='btn btn-remove-selection btn-sm' value='{{loop.index0}}'>Remove</button>
+                </div>
+
+                {% endfor %}
+                
+            </div>
+            
+            <button id="btn-submit" class="btn btn-sm btn-success mt-5" type="submit">Create</button>
+        </form>
+        <button class="btn btn-secondary btn-sm mt-3" id="btn-add-selection" type="button">Add Selection</button>
+
+    </div>
+</div>
+
+{% endblock %}
+

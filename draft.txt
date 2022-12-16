@@ -72,3 +72,70 @@ CREATE TABLE likes (
     FOREIGN KEY (post_id) REFERENCES posts(id)
     FOREIGN KEY (user_id) REFERENCES members(id)
 ); 
+
+CREATE TABLE polls (
+    id INTEGER NOT NULL PRIMARY KEY,
+    extended_family_id INTEGER NOT NULL,
+    question TEXT NOT NULL,
+    max_selection INTEGER NOT NULL,
+    expires_on REAL,
+    creator INTEGER NOT NULL,
+    selection1 TEXT,
+    selection1_id INTEGER,
+    selection2 TEXT,
+    selection2_id INTEGER,
+    selection3 TEXT,
+    selection3_id INTEGER,
+    selection4 TEXT,
+    selection4_id INTEGER,
+    selection5 TEXT,
+    selection5_id INTEGER,
+    selection6 TEXT,
+    selection6_id INTEGER,
+    selection7 TEXT,
+    selection7_id INTEGER,
+    selection8 TEXT,
+    selection8_id INTEGER,
+    selection9 TEXT,
+    selection9_id INTEGER,
+    selection10 TEXT,
+    selection10_id INTEGER,
+    selection11 TEXT,
+    selection11_id INTEGER,
+    selection12 TEXT,
+    selection12_id INTEGER,
+    selection13 TEXT,
+    selection13_id INTEGER,
+    selection14 TEXT,
+    selection14_id INTEGER,
+    selection15 TEXT,
+    selection15_id INTEGER,
+    selection16 TEXT,
+    selection16_id INTEGER,
+    selection17 TEXT,
+    selection17_id INTEGER,
+    selection18 TEXT,
+    selection18_id INTEGER,
+    selection19 TEXT,
+    selection19_id INTEGER,
+    selection20 TEXT,
+    selection20_id INTEGER,
+    selection21 TEXT,
+    selection21_id INTEGER,
+    selection22 TEXT,
+    selection22_id INTEGER,
+    selection23 TEXT,
+    selection23_id INTEGER,
+    selection24 TEXT,
+    selection24_id INTEGER,
+    FOREIGN KEY (extended_family_id) REFERENCES extended_families(id)
+    FOREIGN KEY (creator) REFERENCES members(id)
+); 
+
+CREATE TABLE votes (
+    poll_id INTEGER NOT NULL,
+    selection_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES members(id)
+    FOREIGN KEY (poll_id) REFERENCES polls(id)
+); 

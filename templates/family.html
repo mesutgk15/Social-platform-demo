@@ -10,13 +10,13 @@
     <div class="container">
         <div class="row row-cols-3 mb-3">
             <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{url_for('family_list', family_id=family['id']) }}">Family List</a>
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{url_for('family_list', family_id=family['id']) }}">Member List</a>
             </div>
             <div class="col">
                 <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('wall') }}">Wall</a>
             </div>
             <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Polls</a>
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('polls') }}">Polls</a>
             </div>
         </div>
     </div>

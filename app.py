@@ -77,7 +77,7 @@ def home(family_id):
 
 @app.route("/home/family/list", methods=["GET", "POST"])
 def family_list():
-    family_members = cur.execute("SELECT id, name, last_name, birth_date, datetime(registration_date) FROM members WHERE extended_family_id = ?", request.args.get('family_id'))
+    family_members = cur.execute("SELECT id, name, last_name, birth_date, datetime(registration_date) FROM members WHERE extended_family_id = ?", (session["family_id"],))
     return render_template("family_list.html", family_members=family_members)
 
 @app.route("/home/family/list/contact_details", methods=["POST", "GET"])
@@ -206,6 +206,140 @@ def update_likes():
                 return jsonify(data)
             
 
+@app.route("/polls", methods=["POST", "GET"])
+def polls():
+    if request.method == "POST":
+        poll_id = request.args.get("poll_id")
+        selected_option = (request.form.getlist("poll"+poll_id))
+
+        polls = cur.execute("SELECT *, datetime(expires_on) FROM polls WHERE extended_family_id = ?", (session["family_id"],)).fetchall()
+        
+        poll_dict = [dict(row) for row in polls]
+
+        # Get creator name and last name from members table
+        for i in range(len(polls)):
+            voters_raw = cur.execute("SELECT COUNT(*) FROM votes WHERE poll_id = ? GROUP BY user_id", (polls[i]["id"],)).fetchall()
+            voters = len(voters_raw)
+            creator_last_name = cur.execute("SELECT last_name FROM members WHERE id = ?", (polls[i]["creator"],)).fetchall()[0][0]            
+            poll_dict[i]["voters"] = voters
+            poll_dict[i]["creator_name"] = creator_name
+            poll_dict[i]["creator_last_name"] = creator_last_name
+
+        vote_check = cur.execute("SELECT * FROM votes WHERE poll_id = ? AND user_id = ?", (poll_id, session["user_id"])).fetchall()
+        last_date = cur.execute("SELECT datetime(expires_on) FROM polls WHERE id = ?", poll_id).fetchall()[0][0]
+
+        member_count = cur.execute("SELECT COUNT(extended_family_id) FROM members WHERE extended_family_id = ?", (session["family_id"],)).fetchall()[0][0]
+
+        if str(datetime.today()) > last_date:
+            flash("Poll Expired")
+            return render_template("polls.html", polls=poll_dict, member_count=member_count)
+        if vote_check:
+            flash("You already voted for this poll")
+            return render_template("polls.html", polls=poll_dict, member_count=member_count)
+        else:
+            for i in range(len(selected_option)):                
+                cur.execute("INSERT INTO votes (poll_id, selection_id, user_id) VALUES(?, ? ,?)", (poll_id, selected_option[i], session["user_id"]))
+                db.commit()    
+        
+        print(selected_option)
+        return redirect("/polls")
+    else:
+        polls = cur.execute("SELECT *, datetime(expires_on) FROM polls WHERE extended_family_id = ?", (session["family_id"],)).fetchall()
+        
+        poll_dict = [dict(row) for row in polls]
+
+        # Get creator name and last name from members table
+        for i in range(len(polls)):
+            voters_raw = cur.execute("SELECT COUNT(*) FROM votes WHERE poll_id = ? GROUP BY user_id", (polls[i]["id"],)).fetchall()
+            voters = len(voters_raw)
+            creator_name = cur.execute("SELECT name FROM members WHERE id = ?", (polls[i]["creator"],)).fetchall()[0][0]
+            creator_last_name = cur.execute("SELECT last_name FROM members WHERE id = ?", (polls[i]["creator"],)).fetchall()[0][0]
+            poll_dict[i]["voters"] = voters            
+            poll_dict[i]["creator_name"] = creator_name
+            poll_dict[i]["creator_last_name"] = creator_last_name
+
+        member_count = cur.execute("SELECT COUNT(extended_family_id) FROM members WHERE extended_family_id = ?", (session["family_id"],)).fetchall()[0][0]
+                    
+        return render_template("polls.html", polls=poll_dict, member_count=member_count)
+
+
+@app.route("/get_selections/", methods=["POST", "GET"])
+def get_selections():
+    selections = {}
+    
+    poll_id = request.args.get("poll_id")
+    i = 1
+    while True:        
+        try:
+            selection = cur.execute("SELECT selection"+str(i)+" FROM polls WHERE id = ?", poll_id).fetchall()[0][0]
+            if selection:
+                selections["selection"+str(i)] = selection
+                selections["selection"+str(i)+"_voteCount"] = cur.execute("SELECT COUNT(*) FROM votes WHERE poll_id = ? AND selection_id = ?", (poll_id, "selection"+str(i)+"")).fetchall()[0][0]
+                selections["selection"+str(i)+"_voteTotal"] = cur.execute("SELECT COUNT(*) FROM votes WHERE poll_id = ?", (poll_id)).fetchall()[0][0]
+ 
+            i += 1
+        except:
+            break
+        
+                
+    
+    print(selections)
+    
+    return jsonify(selections) 
+    
+
+@app.route("/start_poll", methods=["POST", "GET"])
+def start_poll():
+    if request.method == "POST":
+        selections = []
+        for i in range(24):
+            slct = "selection-" + str(i)
+            if request.form.get(slct):
+                selections.append(request.form.get(slct))
+        if not request.form.get("question"):
+            flash("Type a Question")
+            return render_template("start-poll.html", form=request.form, selections=selections)
+        if str(datetime.today()) > request.form.get("last_date"):
+            flash("Invalid Due Date for Poll Ending")
+            return render_template("start-poll.html", form=request.form, selections=selections)
+        if len(selections) < 2:
+            flash("Type at Least 2 Selections")
+            return render_template("start-poll.html", form=request.form, selections=selections)
+        if int(request.form.get("max_selection")) < 1 or (int(request.form.get("max_selection")) >= len(selections)):
+            flash("Invalid Max. Selection")
+            return render_template("start-poll.html", form=request.form, selections=selections)
+
+        cur.execute("INSERT INTO polls (extended_family_id, question, max_selection, expires_on, creator) VALUES(?, ?, ?, ?, ?)", (session["family_id"], request.form.get("question"),
+                    request.form.get("max_selection"), request.form.get("last_date"), session["user_id"]))
+                    
+        creator = cur.execute("SELECT name, last_name FROM members WHERE id = ?", (session["user_id"],)).fetchall()
+        
+
+        cur.execute("INSERT INTO posts (extended_family_id, author, content, timestamp) VALUES(?, 1, ?, julianday('now'))", (session["family_id"], ""+str(creator[0]["name"])+" "+str(creator[0]["last_name"])+" has started a new poll. Last Date to vote is: "+request.form.get("last_date")+""))
+
+        db.commit()
+
+        poll_id = cur.lastrowid
+        print(poll_id)
+
+
+        
+        print(len(selections))
+        columns = []
+        columns_id = []
+        for i in range(len(selections)):
+            columns.append("selection"+str(i+1))
+            columns_id.append("selection"+str(i+1)+"_id")
+
+        for i in range(len(selections)):
+            cur.execute("UPDATE polls SET "+columns[i]+" = ?, "+columns_id[i]+" = ? WHERE id = ?", (selections[i], i+1, poll_id))
+            db.commit()
+
+        return redirect("/polls")            
+    else:
+        form = {} 
+        selections = []
+        return render_template("start-poll.html", form=form, selections=selections)
 
 
 

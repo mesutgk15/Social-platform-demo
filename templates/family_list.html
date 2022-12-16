@@ -8,13 +8,13 @@
     <div class="container">
         <div class="row row-cols-3 mb-5">
             <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Member List</a>
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list')}}">Member List</a>
             </div>
             <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Wall</a>
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('wall') }}">Wall</a>
             </div>
             <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Polls</a>
+                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('polls') }}">Polls</a>
             </div>
         </div>
     </div>

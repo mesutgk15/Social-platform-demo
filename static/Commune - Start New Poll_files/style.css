@@ -1,7 +1,6 @@
 body {
     font-family: Georgia, serif; 
     font-size: calc(7px + 0.7vw);
-    margin-bottom: 35px;
 }
 
 header {
@@ -95,18 +94,12 @@ h4 {
     
 }
 
-.post {
+.posts {
     background-color: #ffdd8a;
 }
 
-.post-sys{
-    background-color: #E4E4E5;
-}
+.post-content {
 
-.post-content-sys {
-    font-style: italic;
-    font-size: 0.8em;
-    
 }
 
 .btn-like {
@@ -118,26 +111,3 @@ h4 {
     padding: 5px;
 }
 
-.alert {
-    font-size: 0.7em;
-}
-
-.selection-span{
-    color:#EE9B01;
-    font-size: 1.1em;
-}
-
-h4.poll{
-    color: #d2aa77;
-    font-weight: bold;
-}
-
-h6,h5.poll{
-    color: #d2aa77;
-    font-size: 0.99em;
-}
-
-h6.poll{
-    color: #d2aa77;
-    font-size: 0.8em;
-}

@@ -1,0 +1,69 @@
+{% extends "index.html" %}
+
+{% block title %} - Polls {% endblock %}
+
+{% block script %}
+    <script src="{{url_for('static', filename='jquery.js')}}"></script>
+    <script defer src="{{url_for('static', filename='modal.js')}}"></script>
+    <script defer src="{{url_for('static', filename='createPoll.js')}}"></script>
+{% endblock %}
+
+{% block main %}
+
+{% if get_flashed_messages %}
+
+{% with messages = get_flashed_messages() %}
+
+    {% for message in messages %}
+
+    <div class="alert alert-warning alert-dismissible fade show w-50 container" role="alert">
+        {{message}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    {% endfor %}
+
+{% endwith %}
+
+{% endif %}
+
+<div style="border: solid" class="container post-wrapper">
+
+    <div class="header">Polls</div>
+    <div>
+        <a href="{{ url_for('start_poll') }}" id="newPoll" class="btn btn-success m-3">Start a Poll</a>
+    </div>
+    <div style="border: solid" class="polls">
+
+
+    </div>
+</div>
+
+{% for poll in polls %}
+
+    <div class="container poll mb-5">
+        <div class="header d-flex flex-column mb-2 mt-3">
+            <h4 class="poll">Poll: {{poll["question"]}}</h4>
+            <h5 class="poll">Active Until: {{poll["datetime(expires_on)"] | date }}</h5>
+            <h5 class="poll">Max Choises Allowed: {{poll["max_selection"]}}</h5>
+            <h6 class="poll">Created by: {{poll["creator_name"]}} {{poll["creator_last_name"]}}</h6>
+            <h6 class="poll">Voters: {{poll["voters"]}} / {{member_count}}</h6>
+            <button class="btn btn-sm btn-secondary mx-auto get-poll mb-3 mt-3" value="{{poll['id']}}" role="button">Show Selections</button>
+        </div>
+        <div class="selections-poll{{poll['id']}}">
+            <form action="{{ url_for('polls', poll_id=poll['id'] ) }}" name="poll{{poll['id']}}" max-selection="{{poll['max_selection']}}" method="post" class="selections-form{{poll['id']}} d-flex flex-column align-items-center">
+                <div id="selections{{poll['id']}}">
+                    
+                </div>
+                
+                
+                
+            </form>
+        </div>
+        
+
+    </div>
+
+{% endfor %}
+
+{% endblock %}
