@@ -71,8 +71,14 @@ $(".get-poll").on("click", function(){
                 }
                 else if (key.indexOf("voteTotal") >= 0){
                     let vote_count = $(document.getElementsByClassName("poll"+poll_id+"-selection-group-"+key.slice(0,-10)+"")).attr("data-vote-count")
-                    html_voteTotal = $("<span value='"+key+"' name='poll"+poll_id+"'>%"+Math.floor((vote_count/value)*100)+"</span>");
-                    $(document.getElementsByClassName("poll"+poll_id+"-selection-group-"+key.slice(0,-10)+"")).append(html_voteTotal);
+                    if (vote_count == 0){
+                        html_voteTotal = $("<span value='"+key+"' name='poll"+poll_id+"'>%0</span>");
+                        $(document.getElementsByClassName("poll"+poll_id+"-selection-group-"+key.slice(0,-10)+"")).append(html_voteTotal);
+                    }
+                    else{
+                        html_voteTotal = $("<span value='"+key+"' name='poll"+poll_id+"'>%"+Math.floor((vote_count/value)*100)+"</span>");
+                        $(document.getElementsByClassName("poll"+poll_id+"-selection-group-"+key.slice(0,-10)+"")).append(html_voteTotal);
+                    }
                 }
 
                 else

@@ -2,6 +2,8 @@
 
 {% block title %} - Register {% endblock %}
 
+{%block body_id %}create-family{% endblock %}
+
 {% block script %}
     <script src="{{url_for('static', filename='jquery.js')}}"></script>
     <script src="{{url_for('static', filename='country-change.js')}}"></script>
@@ -9,145 +11,169 @@
 
 {% block main %}
 
-    <h4 class="text-center mb-3">CREATE YOUR FAMILY AT COMMUNE</h4>
+    <h4 class="mb-5">CREATE YOUR FAMILY AT COMMUNE</h4>
 
 
-    
-    <form action="/create-family" method="post">
-        <div class="mb-4">
-            <div class="family-name">
-                {% if errors["family-name"] %}
-                    {% if form["family-name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="family-name" value="{{form['family-name']}}" placeholder="Family Name *">
-                        <div class="register-error mb-3">{{errors["family-name"]}}</div>
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="family-name" placeholder="Family Name *">    
-                        <div class="register-error mb-3">{{errors["family-name"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["family-name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="family-name" value="{{form['family-name']}}" placeholder="Family Name *">
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="family-name" placeholder="Family Name *">
-                    {% endif %}
-                {% endif %}
+    <div class="container">
+        <form action="/create-family" method="post">
+            <div class="mb-1 row">
+                <div class="family-name col-lg-3 mx-auto">
+                    <div class="form-group me-3 ms-3">
+                        {% if errors["family-name"] %}
+                            {% if form["family-name"] %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mb-1" name ="family-name" value="{{form['family-name']}}" placeholder="Family Name *">
+                                <div class="register-error mb-3">{{errors["family-name"]}}</div>
+                            {% else %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mb-1" name ="family-name" placeholder="Family Name *">    
+                                <div class="register-error mb-3">{{errors["family-name"]}}</div>
+                            {% endif %}
+                        {% else %}
+                            {% if form["family-name"] %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mb-3" name ="family-name" value="{{form['family-name']}}" placeholder="Family Name *">
+                            {% else %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mb-3" name ="family-name" placeholder="Family Name *">
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-
-            <div class="family-login-name">
-                {% if errors["family-login-name"] %}
-                    {% if form["family-login-name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="family-login-name" value="{{form['family-login-name']}}" placeholder="Family Login Name *">
-                        <div class="register-error mb-3">{{errors["family-login-name"]}}</div>
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="family-login-name" placeholder="Family Login Name *">    
-                        <div class="register-error mb-3">{{errors["family-login-name"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["family-login-name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="family-login-name" value="{{form['family-login-name']}}" placeholder="Family Login Name *">
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="family-login-name" placeholder="Family Login Name *">
-                    {% endif %}
-                {% endif %}
+        
+        
+            <div class="mb-1 row">
+                <div class="family-login-name col-lg-3 mx-auto">
+                    <div class="form-group me-3 ms-3">
+                        {% if errors["family-login-name"] %}
+                            {% if form["family-login-name"] %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mb-1" name ="family-login-name" value="{{form['family-login-name']}}" placeholder="Family Login Name *">
+                                <div class="register-error mb-3">{{errors["family-login-name"]}}</div>
+                            {% else %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mb-1" name ="family-login-name" placeholder="Family Login Name *">    
+                                <div class="register-error mb-3">{{errors["family-login-name"]}}</div>
+                            {% endif %}
+                        {% else %}
+                            {% if form["family-login-name"] %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mb-3" name ="family-login-name" value="{{form['family-login-name']}}" placeholder="Family Login Name *">
+                            {% else %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mb-3" name ="family-login-name" placeholder="Family Login Name *">
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-            
-            <!-- On changes triggers getCities from country-change.js to list the cities from selected -->
-            <div class="country">
-                {% if errors["country"] %} 
-                    <select name="country"  id="country" class="form-select mx-auto w-auto mb-1" onchange="getCities(this.value)">
-                        <option disabled selected>Select Origin Country For Your Family</option>
-                        {% for country in countries %}
-                            <option value="{{country[0]}}">{{country[0] | title}}</option>
-                        {% endfor %}
-                    </select>       
-                    <div class="register-error mb-3">{{errors["country"]}}</div>                 
-                {% else %}
-                    {% if form["country"] %}
-                        <select name="country"  id="country" class="form-select mx-auto w-auto mb-3" onchange="getCities(this.value)">
-                            <option disabled>Select Origin Country For Your Family</option>
-                            <option selected value="{{form['country']}}">{{form['country'] | title}}</option>
-                            {% for country in countries %}
-                                <option value="{{country[0]}}">{{country[0] | title}}</option>
-                            {% endfor %}
-                        </select>
-                    {% else %}
-                        <select name="country"  id="country" class="form-select mx-auto w-auto mb-3" onchange="getCities(this.value)">
-                            <option selected disabled>Select Origin Country For Your Family</option>
-                        {% for country in countries %}
-                            <option value="{{country[0]}}">{{country[0] | title}}</option>
-                        {% endfor %}
-                        </select>
-                    {% endif %}
-                {% endif %}  
+                
+                <!-- On changes triggers getCities from country-change.js to list the cities from selected -->
+            <div class="mb-1 row">
+                <div class="country col-lg-3 mx-auto">
+                    <div class="form-group me-3 ms-3">
+                        {% if errors["country"] %} 
+                            <select name="country"  id="country" class="form-select mb-1" onchange="getCities(this.value)">
+                                <option disabled selected>Select Origin Country For Your Family</option>
+                                {% for country in countries %}
+                                    <option value="{{country[0]}}">{{country[0] | title}}</option>
+                                {% endfor %}
+                            </select>       
+                            <div class="register-error mb-3">{{errors["country"]}}</div>                 
+                        {% else %}
+                            {% if form["country"] %}
+                                <select name="country"  id="country" class="form-select mb-3" onchange="getCities(this.value)">
+                                    <option disabled>Select Origin Country For Your Family</option>
+                                    <option selected value="{{form['country']}}">{{form['country'] | title}}</option>
+                                    {% for country in countries %}
+                                        <option value="{{country[0]}}">{{country[0] | title}}</option>
+                                    {% endfor %}
+                                </select>
+                            {% else %}
+                                <select name="country"  id="country" class="form-select mb-3" onchange="getCities(this.value)">
+                                    <option selected disabled>Select Origin Country For Your Family</option>
+                                {% for country in countries %}
+                                    <option value="{{country[0]}}">{{country[0] | title}}</option>
+                                {% endfor %}
+                                </select>
+                            {% endif %}
+                        {% endif %}
+                    </div>  
+                </div>
             </div>
-
-            <div class="city">
-                {% if errors["city"] %} 
-                    <select name="city" class="form-select mx-auto w-auto mb-1 city-op">
-                        <option class="saved" disabled selected>Select Origin City For Your Family</option>
-                    </select>       
-                    <div class="register-error mb-3">{{errors["city"]}}</div>                 
-                {% else %}
-                    {% if form["city"] %}
-                        <select name="city" class="form-select mx-auto w-auto mb-3 city-op">
-                            <option class="saved" disabled>Select Origin City For Your Family</option>
-                            <option selected value="{{form['city']}}">{{form['city'] | capitalize}}</option>
-                        </select>
-                    {% else %}
-                        <select name="city" class="form-select mx-auto w-auto mb-3 city-op">
-                            <option class="saved" selected disabled>Select Origin City For Your Family</option>
-                        </select>
-                    {% endif %}
-                {% endif %} 
+        
+        
+            <div class="mb-1 row">
+                <div class="city col-lg-3 mx-auto">
+                    <div class="form-group me-3 ms-3">
+                        {% if errors["city"] %} 
+                            <select name="city" class="form-select mb-1 city-op">
+                                <option class="saved" disabled selected>Select Origin City For Your Family</option>
+                            </select>       
+                            <div class="register-error mb-3">{{errors["city"]}}</div>                 
+                        {% else %}
+                            {% if form["city"] %}
+                                <select name="city" class="form-select mb-3 city-op">
+                                    <option class="saved" disabled>Select Origin City For Your Family</option>
+                                    <option selected value="{{form['city']}}">{{form['city'] | capitalize}}</option>
+                                </select>
+                            {% else %}
+                                <select name="city" class="form-select mb-3 city-op">
+                                    <option class="saved" selected disabled>Select Origin City For Your Family</option>
+                                </select>
+                            {% endif %}
+                        {% endif %}
+                    </div> 
+                </div>
             </div>
-
-
-
-            <div class="password">
-                {% if errors["password"] %}
-                    {% if form["password"] %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password" value="{{form['password']}}" placeholder="Family Password *">
-                        <div class="register-error mb-3 w-25 mx-auto">{{errors["password"]}}</div>
-                    {% else %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password" placeholder="Family Password *">    
-                        <div class="register-error mb-3 w-25 mx-auto">{{errors["password"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["password"] %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" value="{{form['password']}}" placeholder="Family Password *">
-                    {% else %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" placeholder="Family Password *">
-                    {% endif %}
-                {% endif %}
+        
+        
+            <div class="mb-1 row">
+                <div class="password col-lg-3 mx-auto">
+                    <div class="form-group me-3 ms-3">
+                        {% if errors["password"] %}
+                            {% if form["password"] %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mb-1" name ="password" value="{{form['password']}}" placeholder="Family Password *">
+                                <div class="register-error mb-3">{{errors["password"]}}</div>
+                            {% else %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mb-1" name ="password" placeholder="Family Password *">    
+                                <div class="register-error mb-3">{{errors["password"]}}</div>
+                            {% endif %}
+                        {% else %}
+                            {% if form["password"] %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mb-3" name ="password" value="{{form['password']}}" placeholder="Family Password *">
+                            {% else %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mb-3" name ="password" placeholder="Family Password *">
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-
-            <div class="password-confirmation">
-                {% if errors["password-confirmation"] %}
-                    {% if form["password-confirmation"] %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password-confirmation" value="{{form['password-confirmation']}}" placeholder="Confirm Password *">
-                        <div class="register-error mb-3">{{errors["password-confirmation"]}}</div>
-                    {% else %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password-confirmation" placeholder="Confirm Password *">    
-                        <div class="register-error mb-3">{{errors["password-confirmation"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["password-confirmation"] %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password-confirmation" value="{{form['password-confirmation']}}" placeholder="Confirm Password *">
-                    {% else %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password-confirmation" placeholder="Confirm Password *">
-                    {% endif %}
-                {% endif %}
+        
+            <div class="mb-1 row">
+                <div class="password-confirmation col-lg-3 mx-auto">
+                    <div class="form-group me-3 ms-3">
+                        {% if errors["password-confirmation"] %}
+                            {% if form["password-confirmation"] %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mb-1" name ="password-confirmation" value="{{form['password-confirmation']}}" placeholder="Confirm Password *">
+                                <div class="register-error mb-3">{{errors["password-confirmation"]}}</div>
+                            {% else %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mb-1" name ="password-confirmation" placeholder="Confirm Password *">    
+                                <div class="register-error mb-3">{{errors["password-confirmation"]}}</div>
+                            {% endif %}
+                        {% else %}
+                            {% if form["password-confirmation"] %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mb-3" name ="password-confirmation" value="{{form['password-confirmation']}}" placeholder="Confirm Password *">
+                            {% else %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mb-3" name ="password-confirmation" placeholder="Confirm Password *">
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
             </div>
-        </div>
-        {% if get_flashed_messages %}
-
-
-
-        {% endif %}
-        <div class="mb-3">
-            <button class="btn btn-primary" type="submit">Create Family</button>          
-        </div>
-
-    </form>
+            {% if get_flashed_messages %}
+        
+        
+        
+            {% endif %}
+            <div class="mt-3">
+                <button class="btn btn-success btn-sm" type="submit">Create Family</button>          
+            </div>
+        
+        </form>
+    </div>
 
 {% endblock %}

@@ -2,6 +2,8 @@
 
 {% block title %} - Start New Poll {% endblock %}
 
+{%block body_id %}start_poll{% endblock %}
+
 {% block script %}
     <script src="{{url_for('static', filename='jquery.js')}}"></script>
     <script defer src="{{url_for('static', filename='modal.js')}}"></script>
@@ -27,31 +29,57 @@
 
 {% endif %}
 
-<div style="border: solid" class="container post-wrapper">
+<div class="container poll-wrapper p-3">
 
-    <div class="header">Start a Poll</div>
+    <h4 class="header">Start New Poll</h4>
 
-    <div style="border: solid" class="polls p-3">
-        <form action="{{url_for('start_poll')}}" class="form-control" method="post">
-            <div id="lastDate-container" class="d-flex justify-content-center gap-5 mb-2">
-                <label class="mt-2" for="poll-lastDate">Active Until</label>
-                <input type="date" autocomplete="off" name="last_date" class="form-control w-auto" id="poll-lastDate">
-            </div>
-            <div id="maxSelection-container" class="d-flex justify-content-center gap-5 mb-2">
-                <label class="mt-2" for="poll-maxSelection">Max. Selections</label>
-                <input type="number" autocomplete="off" name="max_selection" class="form-control w-auto" id="poll-maxSelection">
-            </div>
-            {% if form['question'] %}
-                <div id="question-container" class="d-flex justify-content-center gap-5">
-                    <label class="mt-2" for="poll-question">Question</label>
-                    <input type="text" autocomplete="off" name="question" class="form-control w-75" id="poll-question" value="{{form['question']}}">
+    <div class="p-3 container poll-create">
+        <form action="{{url_for('start_poll')}}" class="form-control form-start-poll p-5" method="post">
+            <div class="row form-group">
+                <div id="lastDate-container" class="d-flex justify-content-center gap-5 mb-2 form-group">
+                    <div class="col-lg-2">
+                        <label class="mt-2" for="poll-lastDate">Active Until</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="date" autocomplete="off" name="last_date" class="form-control w-75" id="poll-lastDate">
+                    </div>
                 </div>
-            {% else %}
-                <div id="question-container" class="d-flex justify-content-center gap-5">
-                    <label class="mt-2" for="poll-question">Question</label>
-                    <input type="text" autocomplete="off" name="question" class="form-control w-75" id="poll-question">
+            </div>
+            <div class="row form-group">
+                <div id="maxSelection-container" class="d-flex justify-content-center gap-5 mb-2 form-group">
+                    <div class="col-lg-2">
+                        <label class="mt-2" for="poll-maxSelection">Max. Selections</label>
+                    </div>
+                    <div class="col-lg-2">
+                        <input type="number" autocomplete="off" name="max_selection" class="form-control w-75" id="poll-maxSelection">
+                    </div>
                 </div>
-            {% endif %}
+            </div>
+            <div class="row form-group">
+                    {% if form['question'] %}
+                        <div id="question-container" class="d-flex justify-content-center gap-5">
+                            <div class="col-lg-2">
+                                <label class="mt-2" for="poll-question">Question</label>
+                            </div>
+                            <div class="col-lg-5">
+                                <input type="text" autocomplete="off" name="question" class="form-control" id="poll-question" value="{{form['question']}}">
+                            </div>
+                        </div>
+            <div class="row form-group">
+                    {% else %}
+                        <div id="question-container" class="d-flex justify-content-center gap-5">
+                            <div class="col-lg-2">
+                                <label class="mt-2" for="poll-question">Question</label>
+                            </div>
+                            <div class="col-lg-2 w-50">
+                                <input type="text" autocomplete="off" name="question" class="form-control" id="poll-question">
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <button class="btn btn-secondary btn-sm mt-3 mb-3" id="btn-add-selection" type="button">Add Selection</button>
             
             <div class="selections">
             
@@ -69,7 +97,7 @@
             
             <button id="btn-submit" class="btn btn-sm btn-success mt-5" type="submit">Create</button>
         </form>
-        <button class="btn btn-secondary btn-sm mt-3" id="btn-add-selection" type="button">Add Selection</button>
+        
 
     </div>
 </div>

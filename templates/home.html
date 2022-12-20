@@ -2,14 +2,22 @@
 
 {% block title %} - Home {% endblock %}
 
+{%block body_id %}home{% endblock %}
+
 {% block main %}
 
-    <h4 class="text-center mb-3">Welcome </h4>
+    <h4 class="text-center mb-3">Welcome</h4>
     
-    <div class="container-sm mb-3" style="border: solid;">
-        <p>You have not connected to a family</p>
-        <p>Click Here to Join : <a href="{{url_for('join_family')}}" class="btn btn-primary btn-sm">JOIN A FAMILY</a></p> 
-        <p>Click Here to Create One Now! : <a href="/create-family" class="btn btn-primary btn-sm">CREATE A FAMILY</a></p>
+    <div class="container-sm mb-3">
+        <p class="mb-5">YOU HAVE NOT CONNECTED TO A FAMILY</p>
+        <div>
+            <p>Click Here to Join</p>  
+            <a href="{{url_for('join_family')}}" class="btn btn-success btn-sm">JOIN A FAMILY</a> 
+        </div>
+        <div class="mt-5">
+            <p>Click Here to Create One Now!</p>
+            <a href="/create-family" class="btn btn-success btn-sm">CREATE A FAMILY</a>
+        </div>
     </div>
 
 

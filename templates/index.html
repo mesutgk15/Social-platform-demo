@@ -10,7 +10,7 @@
     {% block script %}{% endblock %}
     <title>Commune {% block title %} {% endblock %}</title>
 </head>
-<body id="{%block body_id %} {% endblock %}">
+<body id="{%block body_id %}index{% endblock %}">
     <header>
         <section>
             <nav role="navigation" class="navbar border navbar-expand-md mb-5">
@@ -29,14 +29,14 @@
                             </ul>
                         {% else %}
                             <ul class="navbar-nav ms-auto">
-                                <li class="nav-item" style="padding: 0.5em; margin-right: 3px;">
-                                    <span class="" id="nav-username">{{session['username']}}</span>
+                                <li class="nav-item" style="margin-right: 5px;">
+                                    <span class="nav-link text-sm-start" id="nav-username">{{session['username']}}</span>
                                 </li>
                                 <li class="nav-item" style="padding: 5px;">
                                     {% if os.path.exists('static/profile_pictures/' + (session['user_id'] | string) + '.jpg') %}
-                                    <img width="30vw" height="auto" style="border-radius: 50%;" src="{{ url_for('static', filename='profile_pictures/' + (session['user_id'] | string ) + '.jpg' ) }}">
+                                    <img class="profile-picture" src="{{ url_for('static', filename='profile_pictures/' + (session['user_id'] | string ) + '.jpg' ) }}" alt="Profile Picture">
                                     {% else %}
-                                    <img width="30vw" height="auto" style="border-radius: 50%;" src="{{ url_for('static', filename='profile_pictures/user.png') }}" alt="...">
+                                    <img class="profile-picture" src="{{ url_for('static', filename='profile_pictures/user.png') }}" alt="Profile Picture">
                                     {% endif %}
                                 </li>
                                 <li class="nav-item">
@@ -55,6 +55,44 @@
     
     <main class="text-center">
         {% block main %}
+
+        <h3 class="text-center mb-4 login-title">LOGIN</h3>
+        <h6 class="text-center mb-4 login-title">Email or Username</h6>
+        
+        <div class="login-container container w-25">
+            <form action="/login" method="post">
+                <div class="mb-4">
+                    <div class="login-name">
+                            {% if form["login-name"] %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="login-name" value="{{form['login-name']}}" placeholder="Username *">
+                            {% else %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="login-name" placeholder="Username *">    
+                            {% endif %}
+                    </div>
+                    <div class="email">
+        
+                            {% if form["email"] %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="email" value="{{form['email']}}" placeholder="Email *">
+                            {% else %}
+                                <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="email" placeholder="Email *">
+                            {% endif %}
+                    </div>
+                    <div class="password">
+                            {% if form["password"] %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" value="{{form['password']}}" placeholder="Password *">
+                            {% else %}
+                                <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" placeholder="Password *">    
+                            {% endif %}
+                    </div>
+                    {% if errors["login"] %}
+                            <div class="login-error mb-3">{{errors["login"]}}</div>
+                    {% endif %}
+                    <div class="mb-3">
+                        <button class="btn btn-primary" type="submit">Login</button>          
+                    </div>
+                </div>
+            </form>
+        </div>
 
         {% endblock %}
     </main>

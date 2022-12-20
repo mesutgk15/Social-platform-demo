@@ -4,24 +4,24 @@
 
 {% block main %}
 
-    <div class="container">
+    <div class="container mb-5">
         <div class="row row-cols-3 mb-3">
-            <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Family List</a>
+            <div class="">
+                <a class="button-77" role="button" href="{{ url_for('family_list') }}">Member List</a>
             </div>
-            <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Wall</a>
+            <div class="">
+                <a class="button-77"  href="{{ url_for('wall') }}">Wall</a>
             </div>
-            <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list', family_id=session['family_id'] ) }}">Polls</a>
-            </div>  
+            <div class="">
+                <a class="button-77"  href="{{ url_for('polls') }}">Polls</a>
+            </div>
         </div>
     </div>
 
     <div class="d-flex justify-content-center">
 
         {% for contact in contact %}
-            <div class="card mb-5" style="width: 15rem">
+            <div class="card mb-5 contact-card">
 
                 {% if os.path.exists('static/profile_pictures/' + (contact['id'] | string) + '.jpg') %}
                     <img style="padding: 15px;" src="{{ url_for('static', filename='profile_pictures/' + (contact['id'] | string ) + '.jpg' ) }}" class="card-img-top" alt="...">
@@ -46,7 +46,7 @@
                       <p class="card-text">-</p>
                   {% endif %}
                   
-                  <a href="#" class="btn btn-primary">Go somewhere</a>
+
                 </div>
             </div>
         {% endfor %}

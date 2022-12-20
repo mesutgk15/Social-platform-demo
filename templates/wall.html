@@ -2,6 +2,8 @@
 
 {% block title %} - Wall {% endblock %}
 
+{%block body_id %}wall{% endblock %}
+
 {% block script %}
     <script src="{{url_for('static', filename='jquery.js')}}"></script>
     <script defer src="{{url_for('static', filename='modal.js')}}"></script>
@@ -10,19 +12,17 @@
 
 {% block main %}
 
-<div style="border: solid" class="container post-wrapper">
+<div class="container post-wrapper p-3">
 
     <div class="header">Family Wall</div>
     <div>
-        <button id="newPost" class="btn btn-success m-3">Send a New Post</button>
+        <button id="newPost" class="btn btn-success m-3 btn-sm">Send a New Post</button>
     </div>
-    <div style="border: solid" class="posts">
-
-
+    <div class="posts">
         
         {% for post in posts %}
             {%  if post['author'] != 1 %}
-                <div style="border: solid" class="post">
+                <div class="post p-1 mb-2">
                     <div class="post-header mt-2 text-start">
 
                         <div>
@@ -48,11 +48,11 @@
                             <span id="like-count-{{post['id']}}">{{post["like-count"]}}</span>
                             <button value="{{post['id']}}" class="btn btn-like" onclick="updateLike(this.value)">
                                 {% if post["like-status"] == 'LIKE' %}
-                                    <img id="like-icon-liked-{{post['id']}}" width="20px" src="{{ url_for('static', filename='like-liked.png') }}" alt="Post Liked">
-                                    <img hidden id="like-icon-def-{{post['id']}}" width="20px" src="{{ url_for('static', filename='like-def.png') }}" alt="Like">
+                                    <img id="like-icon-liked-{{post['id']}}" class="img-like-dislike" src="{{ url_for('static', filename='like-liked.png') }}" alt="Post Liked">
+                                    <img hidden id="like-icon-def-{{post['id']}}" class="img-like-dislike" src="{{ url_for('static', filename='like-def.png') }}" alt="Like">
                                 {% else %}
-                                    <img id="like-icon-def-{{post['id']}}" width="20px" src="{{ url_for('static', filename='like-def.png') }}" alt="Like">
-                                    <img hidden id="like-icon-liked-{{post['id']}}" width="20px" src="{{ url_for('static', filename='like-liked.png') }}" alt="Post Liked">
+                                    <img id="like-icon-def-{{post['id']}}" class="img-like-dislike" src="{{ url_for('static', filename='like-def.png') }}" alt="Like">
+                                    <img hidden id="like-icon-liked-{{post['id']}}" class="img-like-dislike" src="{{ url_for('static', filename='like-liked.png') }}" alt="Post Liked">
                                 {% endif %}
                                 <span>Like</span>
                             </button>
@@ -61,11 +61,11 @@
                             <span id="dislike-count-{{post['id']}}">{{post["dislike-count"]}}</span>
                             <button value="{{post['id']}}" class="btn btn-dislike" onclick="updateDislike(this.value)">
                                 {% if post["like-status"] == 'DISLIKE' %}
-                                    <img id="dislike-icon-disliked-{{post['id']}}" width="20px" src="{{ url_for('static', filename='dislike-disliked.png') }}" alt="Post Disliked">
-                                    <img hidden id="dislike-icon-def-{{post['id']}}" width="20px" src="{{ url_for('static', filename='dislike-def.png') }}" alt="Dislike">
+                                    <img id="dislike-icon-disliked-{{post['id']}}" class="img-like-dislike" src="{{ url_for('static', filename='dislike-disliked.png') }}" alt="Post Disliked">
+                                    <img hidden id="dislike-icon-def-{{post['id']}}" class="img-like-dislike" src="{{ url_for('static', filename='dislike-def.png') }}" alt="Dislike">
                                 {% else %}
-                                    <img id="dislike-icon-def-{{post['id']}}" width="20px" src="{{ url_for('static', filename='dislike-def.png') }}" alt="Dislike">
-                                    <img hidden id="dislike-icon-disliked-{{post['id']}}" width="20px" src="{{ url_for('static', filename='dislike-disliked.png') }}" alt="Post Disliked">
+                                    <img id="dislike-icon-def-{{post['id']}}" class="img-like-dislike" src="{{ url_for('static', filename='dislike-def.png') }}" alt="Dislike">
+                                    <img hidden id="dislike-icon-disliked-{{post['id']}}" class="img-like-dislike" src="{{ url_for('static', filename='dislike-disliked.png') }}" alt="Post Disliked">
                                 {% endif %}
                                 <span>Dislike</span>
                             </button>
@@ -73,7 +73,7 @@
                     </div>
                 </div>
             {% else %}
-                <div style="border: solid" class="post-sys">
+                <div class="post-sys mb-2 p-1">
                     <div class="post-header mt-2 text-start">
 
                         <div>

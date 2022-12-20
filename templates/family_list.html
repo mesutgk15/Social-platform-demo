@@ -2,19 +2,21 @@
 
 {% block title %} - Home {% endblock %}
 
+{%block body_id %}family_list{% endblock %}
+
 {% block main %}
 
-    <h4 class="text-center mb-3">Welcome </h4>
-    <div class="container">
-        <div class="row row-cols-3 mb-5">
-            <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('family_list')}}">Member List</a>
+    
+    <div class="container mb-5">
+        <div class="row row-cols-3 mb-3">
+            <div class="">
+                <a class="button-77" role="button" href="{{url_for ('family_list') }}">Member List</a>
             </div>
-            <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('wall') }}">Wall</a>
+            <div class="">
+                <a class="button-77"  href="{{ url_for('wall') }}">Wall</a>
             </div>
-            <div class="col">
-                <a class="btn btn-secondary mt-1 mb-1"  href="{{ url_for('polls') }}">Polls</a>
+            <div class="">
+                <a class="button-77"  href="{{ url_for('polls') }}">Polls</a>
             </div>
         </div>
     </div>

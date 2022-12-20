@@ -1,7 +1,24 @@
 body {
     font-family: Georgia, serif; 
-    font-size: calc(7px + 0.7vw);
+    font-size: calc(7px + 0.5vw);
     margin-bottom: 35px;
+}
+
+body#index {
+
+    background-color: #4b6587;
+}
+
+.login-container {
+    background-color: gray;
+    padding-top: 25px;
+    padding-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px silver;
+}
+
+.login-title {
+    color: silver;
 }
 
 header {
@@ -12,16 +29,35 @@ footer {
     font-size: calc(1px + 0.7vw);
 }  
 
-body#profile {
+body#profile,#wall {
     background-color: whitesmoke;
 }
 
-body#family {
-    background-color: #EE9B01;
+body#home,#create-family {
+    background-color: rgba(90, 149, 154, 0.9);
+    color: rgba(192, 192, 192, 1);    
+}
+
+#home main{
+    font-weight: bold;
+    color: hsl(0, 0%, 92%);
+}
+
+.profile-picture {
+    width: calc(18px + 0.5vw);
+    height: calc(18px + 0.5vw);
+    border-radius: 50%;
+
+}
+
+
+
+body#family,#family_list,#wall,#polls,#start_poll {
+    background-color: rgba(238, 155, 1, 0.7);
 }
 
 .register-error, .login-error {
-    color: red;
+    color: hsl(5, 60%, 45%);
     font-size: small;
 }
 
@@ -33,12 +69,6 @@ body#family {
     font-weight: bold;
     color: #68904D;
     font-size: 1.3em;
-}
-
-.col {
-    
-    border-style: groove;
-    border-color: #68904D;
 }
 
 .error-flash {
@@ -67,6 +97,12 @@ h4 {
     background-color: #E4E4E5;
 }
 
+
+.contact-card {
+    width: 18em;
+}
+
+
 .profile-container {
     max-width: 60vw;
     border-width: 1px;
@@ -75,6 +111,11 @@ h4 {
 
 #nav-username {
     font-weight: 600;
+}
+
+.post,.post-sys{
+    border-style: dashed;
+    border-width: 1.5px;
 }
 
 .post-time {
@@ -89,6 +130,8 @@ h4 {
 .post-footer {
     font-size: 0.9em;
 }
+
+
 
 .post-wrapper {
     background-color: #e1ad6d;
@@ -112,10 +155,16 @@ h4 {
 .btn-like {
     margin-right: 20px;
     padding: 5px;
+    font-size: calc(0.9em + 0.1vw);
 }
 
 .btn-dislike {
     padding: 5px;
+    font-size: calc(0.9em + 0.1vw);
+}
+
+.img-like-dislike{
+    width: calc(1.1em + 0.4vw);
 }
 
 .alert {
@@ -127,17 +176,144 @@ h4 {
     font-size: 1.1em;
 }
 
+h2.polls-title {
+
+    font-weight: bold;
+    color: #4B6587;
+
+}
+
 h4.poll{
-    color: #d2aa77;
+    color:#AD8B73;
     font-weight: bold;
 }
 
+.poll {
+    background-color: #ffdd8a;
+    border-radius: 10px;
+}
+
+
 h6,h5.poll{
-    color: #d2aa77;
+    color: #4B6587;
     font-size: 0.99em;
 }
 
+.form-start-poll {
+
+    background-color: rgba(192, 192, 192, 0.8);
+    border-radius: 10px;
+    box-shadow: 3px 3px rgba(172, 172, 172, 0.9);
+    
+    
+}
+
 h6.poll{
-    color: #d2aa77;
+    color: #4b6587;
     font-size: 0.8em;
 }
+
+a:hover{
+    color: #fff;
+}
+
+.button-77 {
+    align-items: center;
+    appearance: none;
+    background-clip: padding-box;
+    background-color: initial;
+    background-image: none;
+    border-style: none;
+    box-sizing: border-box;
+    color: #fff;
+    cursor: pointer;
+    display: inline-block;
+    flex-direction: row;
+    flex-shrink: 0;
+    font-family: Eina01,sans-serif;
+    font-size: 16px;
+    font-weight: 800;
+    justify-content: center;
+    line-height: 24px;
+    margin: 0;
+    min-height: 64px;
+    outline: none;
+    overflow: visible;
+    padding: 19px 26px;
+    pointer-events: auto;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    text-transform: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    vertical-align: middle;
+    width: auto;
+    word-break: keep-all;
+    z-index: 0;
+  }
+  
+  @media (min-width: 768px) {
+    .button-77 {
+      padding: 19px 32px;
+    }
+  }
+  
+  .button-77:before,
+  .button-77:after {
+    border-radius: 80px;
+  }
+  
+  .button-77:before {
+    background-color: rgba(249, 58, 19, .32);
+    content: "";
+    display: block;
+    height: 100%;
+    left: 0;
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    width: 100%;
+    z-index: -2;
+  }
+  
+  .button-77:after {
+    background-color: initial;
+    background-image: linear-gradient(92.83deg, #ff7426 0, #f93a13 100%);
+    bottom: 4px;
+    content: "";
+    display: block;
+    left: 4px;
+    overflow: hidden;
+    position: absolute;
+    right: 4px;
+    top: 4px;
+    transition: all 100ms ease-out;
+    z-index: -1;
+  }
+  
+  .button-77:hover:not(:disabled):after {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    top: 0;
+    transition-timing-function: ease-in;
+  }
+  
+  .button-77:active:not(:disabled) {
+    color: #ccc;
+  }
+  
+  .button-77:active:not(:disabled):after {
+    background-image: linear-gradient(0deg, rgba(0, 0, 0, .2), rgba(0, 0, 0, .2)), linear-gradient(92.83deg, #ff7426 0, #f93a13 100%);
+    bottom: 4px;
+    left: 4px;
+    right: 4px;
+    top: 4px;
+  }
+  
+  .button-77:disabled {
+    cursor: default;
+    opacity: .24;
+  }

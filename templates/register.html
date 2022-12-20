@@ -4,149 +4,152 @@
 
 {% block main %}
 
-    <h4 class="text-center mb-3">REGISTER</h4>
+    <h3 class="login-title mb-3">REGISTER</h3>
 
     {% if errors["email_verification_fail"] %}
         <div class="register-error mb-3">{{errors["email_verification_fail"]}}</div>
     {% endif %}
+
+    <div class="login-container container w-25">
     
-    <form action="/register" method="post">
-        <div class="mb-4">
-            <div class="first-name">
-                {% if errors["first-name"] %}
-                    {% if form["name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="name" value="{{form['name']}}" placeholder="Name *">
-                        <div class="register-error mb-3">{{errors["first-name"]}}</div>
+        <form action="/register" method="post">
+            <div class="mb-4">
+                <div class="first-name">
+                    {% if errors["first-name"] %}
+                        {% if form["name"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="name" value="{{form['name']}}" placeholder="Name *">
+                            <div class="register-error mb-3">{{errors["first-name"]}}</div>
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="name" placeholder="Name *">    
+                            <div class="register-error mb-3">{{errors["first-name"]}}</div>
+                        {% endif %}
                     {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="name" placeholder="Name *">    
-                        <div class="register-error mb-3">{{errors["first-name"]}}</div>
+                        {% if form["name"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="name" value="{{form['name']}}" placeholder="Name *">
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="name" placeholder="Name *">
+                        {% endif %}
                     {% endif %}
-                {% else %}
-                    {% if form["name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="name" value="{{form['name']}}" placeholder="Name *">
+                </div>
+
+                <div class="last-name">
+                    {% if errors["last-name"] %}
+                        {% if form["last-name"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="last-name" value="{{form['last-name']}}" placeholder="Last Name *">
+                            <div class="register-error mb-3">{{errors["last-name"]}}</div>
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="last-name" placeholder="Last Name *">    
+                            <div class="register-error mb-3">{{errors["last-name"]}}</div>
+                        {% endif %}
                     {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="name" placeholder="Name *">
+                        {% if form["last-name"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="last-name" value="{{form['last-name']}}" placeholder="Last Name *">
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="last-name"  placeholder="Last Name *">
+                        {% endif %}
                     {% endif %}
-                {% endif %}
+                </div>
+
+                <div class="birth-date">
+                    {% if errors["birth-date"] %}
+                        {% if form["birth-date"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="birth-date" value="{{form['birth-date']}}" placeholder="Birth Date *" onfocus="this.type='date'" onblur="this.type='text'">
+                            <div class="register-error mb-3">{{errors["birth-date"]}}</div>
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="birth-date" placeholder="Birth Date *" onfocus="this.type='date'" onblur="this.type='text'">    
+                            <div class="register-error mb-3">{{errors["birth-date"]}}</div>
+                        {% endif %}
+                    {% else %}
+                        {% if form["birth-date"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="birth-date" value="{{form['birth-date']}}" placeholder="Birth Date *" onfocus="this.type='date'" onblur="this.type='text'">
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="birth-date" placeholder="Birth Date *" onfocus="this.type='date'" onblur="this.type='text'">
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="login-name">
+                    {% if errors["login-name"] %}
+                        {% if form["login-name"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="login-name" value="{{form['login-name']}}" placeholder="Username *">
+                            <div class="register-error mb-3">{{errors["login-name"]}}</div>
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="login-name" placeholder="Username *">    
+                            <div class="register-error mb-3">{{errors["login-name"]}}</div>
+                        {% endif %}
+                    {% else %}
+                        {% if form["login-name"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="login-name" value="{{form['login-name']}}" placeholder="Username *">
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="login-name" placeholder="Username *">
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="email">
+                    {% if errors["email"] %}
+                        {% if form["email"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="email" value="{{form['email']}}" placeholder="Email *">
+                            <div class="register-error mb-3">{{errors["email"]}}</div>
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="email" placeholder="Email *">    
+                            <div class="register-error mb-3">{{errors["email"]}}</div>
+                        {% endif %}
+                    {% else %}
+                        {% if form["email"] %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="email" value="{{form['email']}}" placeholder="Email *">
+                        {% else %}
+                            <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="email" placeholder="Email *">
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="password">
+                    {% if errors["password"] %}
+                        {% if form["password"] %}
+                            <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password" value="{{form['password']}}" placeholder="Password *">
+                            <div class="register-error mb-3 mx-auto">{{errors["password"]}}</div>
+                        {% else %}
+                            <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password" placeholder="Password *">    
+                            <div class="register-error mb-3 mx-auto">{{errors["password"]}}</div>
+                        {% endif %}
+                    {% else %}
+                        {% if form["password"] %}
+                            <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" value="{{form['password']}}" placeholder="Password *">
+                        {% else %}
+                            <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" placeholder="Password *">
+                        {% endif %}
+                    {% endif %}
+                </div>
+
+                <div class="password-confirmation">
+                    {% if errors["password-confirmation"] %}
+                        {% if form["password-confirmation"] %}
+                            <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password-confirmation" value="{{form['password-confirmation']}}" placeholder="Confirm Password *">
+                            <div class="register-error mb-3">{{errors["password-confirmation"]}}</div>
+                        {% else %}
+                            <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password-confirmation" placeholder="Confirm Password *">    
+                            <div class="register-error mb-3">{{errors["password-confirmation"]}}</div>
+                        {% endif %}
+                    {% else %}
+                        {% if form["password-confirmation"] %}
+                            <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password-confirmation" value="{{form['password-confirmation']}}" placeholder="Confirm Password *">
+                        {% else %}
+                            <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password-confirmation" placeholder="Confirm Password *">
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
+            {% if get_flashed_messages %}
+
+
+
+            {% endif %}
+            <div class="mb-3">
+                <button class="btn btn-primary" type="submit">Done</button>          
             </div>
 
-            <div class="last-name">
-                {% if errors["last-name"] %}
-                    {% if form["last-name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="last-name" value="{{form['last-name']}}" placeholder="Last Name *">
-                        <div class="register-error mb-3">{{errors["last-name"]}}</div>
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="last-name" placeholder="Last Name *">    
-                        <div class="register-error mb-3">{{errors["last-name"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["last-name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="last-name" value="{{form['last-name']}}" placeholder="Last Name *">
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="last-name"  placeholder="Last Name *">
-                    {% endif %}
-                {% endif %}
-            </div>
-
-            <div class="birth-date">
-                {% if errors["birth-date"] %}
-                    {% if form["birth-date"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="birth-date" value="{{form['birth-date']}}" placeholder="Birth Date *" onfocus="this.type='date'" onblur="this.type='text'">
-                        <div class="register-error mb-3">{{errors["birth-date"]}}</div>
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="birth-date" placeholder="Birth Date *" onfocus="this.type='date'" onblur="this.type='text'">    
-                        <div class="register-error mb-3">{{errors["birth-date"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["birth-date"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="birth-date" value="{{form['birth-date']}}" placeholder="Birth Date *" onfocus="this.type='date'" onblur="this.type='text'">
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="birth-date" placeholder="Birth Date *" onfocus="this.type='date'" onblur="this.type='text'">
-                    {% endif %}
-                {% endif %}
-            </div>
-
-            <div class="login-name">
-                {% if errors["login-name"] %}
-                    {% if form["login-name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="login-name" value="{{form['login-name']}}" placeholder="Username *">
-                        <div class="register-error mb-3">{{errors["login-name"]}}</div>
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="login-name" placeholder="Username *">    
-                        <div class="register-error mb-3">{{errors["login-name"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["login-name"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="login-name" value="{{form['login-name']}}" placeholder="Username *">
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="login-name" placeholder="Username *">
-                    {% endif %}
-                {% endif %}
-            </div>
-
-            <div class="email">
-                {% if errors["email"] %}
-                    {% if form["email"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="email" value="{{form['email']}}" placeholder="Email *">
-                        <div class="register-error mb-3">{{errors["email"]}}</div>
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="email" placeholder="Email *">    
-                        <div class="register-error mb-3">{{errors["email"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["email"] %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="email" value="{{form['email']}}" placeholder="Email *">
-                    {% else %}
-                        <input type="text" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="email" placeholder="Email *">
-                    {% endif %}
-                {% endif %}
-            </div>
-
-            <div class="password">
-                {% if errors["password"] %}
-                    {% if form["password"] %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password" value="{{form['password']}}" placeholder="Password *">
-                        <div class="register-error mb-3 w-25 mx-auto">{{errors["password"]}}</div>
-                    {% else %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password" placeholder="Password *">    
-                        <div class="register-error mb-3 w-25 mx-auto">{{errors["password"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["password"] %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" value="{{form['password']}}" placeholder="Password *">
-                    {% else %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password" placeholder="Password *">
-                    {% endif %}
-                {% endif %}
-            </div>
-
-            <div class="password-confirmation">
-                {% if errors["password-confirmation"] %}
-                    {% if form["password-confirmation"] %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password-confirmation" value="{{form['password-confirmation']}}" placeholder="Confirm Password *">
-                        <div class="register-error mb-3">{{errors["password-confirmation"]}}</div>
-                    {% else %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-1" name ="password-confirmation" placeholder="Confirm Password *">    
-                        <div class="register-error mb-3">{{errors["password-confirmation"]}}</div>
-                    {% endif %}
-                {% else %}
-                    {% if form["password-confirmation"] %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password-confirmation" value="{{form['password-confirmation']}}" placeholder="Confirm Password *">
-                    {% else %}
-                        <input type="password" autofocus autocomplete="on" class="form-control mx-auto w-auto mb-3" name ="password-confirmation" placeholder="Confirm Password *">
-                    {% endif %}
-                {% endif %}
-            </div>
-        </div>
-        {% if get_flashed_messages %}
-
-
-
-        {% endif %}
-        <div class="mb-3">
-            <button class="btn btn-primary" type="submit">Done</button>          
-        </div>
-
-    </form>
+        </form>
+    </div>
 
 {% endblock %}

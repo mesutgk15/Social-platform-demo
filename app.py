@@ -49,16 +49,17 @@ def after_request(response):
 def index():
 
     if not session:
-        return render_template("index.html")
+        form = {}
+        errors = {}
+        return render_template("index.html", form=form, errors=errors)
     family_check = cur.execute("SELECT extended_family_id FROM members WHERE id = ?", (session['user_id'],)).fetchall()[0][0]
     try:
-        if family_check == session["family_id"]:
-            print(family_check)
-            return redirect(url_for('home', family_id=str(family_check)))
-        else:
-            return render_template("home.html", family_id=str(family_check))    
+        print(family_check)
+        return redirect(url_for('home', family_id=str(family_check)))
     except:
-        return render_template("index.html")
+        form = {}
+        errors = {}
+        return render_template("index.html", form=form, errors=errors)
 
 @app.context_processor
 def handle_context():
@@ -212,7 +213,7 @@ def polls():
         poll_id = request.args.get("poll_id")
         selected_option = (request.form.getlist("poll"+poll_id))
 
-        polls = cur.execute("SELECT *, datetime(expires_on) FROM polls WHERE extended_family_id = ?", (session["family_id"],)).fetchall()
+        polls = cur.execute("SELECT *, datetime(expires_on) FROM polls WHERE extended_family_id = ? ORDER BY id DESC", (session["family_id"],)).fetchall()
         
         poll_dict = [dict(row) for row in polls]
 
@@ -220,13 +221,14 @@ def polls():
         for i in range(len(polls)):
             voters_raw = cur.execute("SELECT COUNT(*) FROM votes WHERE poll_id = ? GROUP BY user_id", (polls[i]["id"],)).fetchall()
             voters = len(voters_raw)
+            creator_name = cur.execute("SELECT name FROM members WHERE id = ?", (polls[i]["creator"],)).fetchall()[0][0]
             creator_last_name = cur.execute("SELECT last_name FROM members WHERE id = ?", (polls[i]["creator"],)).fetchall()[0][0]            
             poll_dict[i]["voters"] = voters
             poll_dict[i]["creator_name"] = creator_name
             poll_dict[i]["creator_last_name"] = creator_last_name
 
         vote_check = cur.execute("SELECT * FROM votes WHERE poll_id = ? AND user_id = ?", (poll_id, session["user_id"])).fetchall()
-        last_date = cur.execute("SELECT datetime(expires_on) FROM polls WHERE id = ?", poll_id).fetchall()[0][0]
+        last_date = cur.execute("SELECT datetime(expires_on) FROM polls WHERE id = ?", (poll_id,)).fetchall()[0][0]
 
         member_count = cur.execute("SELECT COUNT(extended_family_id) FROM members WHERE extended_family_id = ?", (session["family_id"],)).fetchall()[0][0]
 
@@ -244,7 +246,7 @@ def polls():
         print(selected_option)
         return redirect("/polls")
     else:
-        polls = cur.execute("SELECT *, datetime(expires_on) FROM polls WHERE extended_family_id = ?", (session["family_id"],)).fetchall()
+        polls = cur.execute("SELECT *, datetime(expires_on) FROM polls WHERE extended_family_id = ? ORDER BY id DESC", (session["family_id"],)).fetchall()
         
         poll_dict = [dict(row) for row in polls]
 
@@ -268,15 +270,15 @@ def get_selections():
     selections = {}
     
     poll_id = request.args.get("poll_id")
+    print(poll_id)
     i = 1
     while True:        
         try:
-            selection = cur.execute("SELECT selection"+str(i)+" FROM polls WHERE id = ?", poll_id).fetchall()[0][0]
+            selection = cur.execute("SELECT selection"+str(i)+" FROM polls WHERE id = ?", (poll_id,)).fetchall()[0][0]
             if selection:
                 selections["selection"+str(i)] = selection
                 selections["selection"+str(i)+"_voteCount"] = cur.execute("SELECT COUNT(*) FROM votes WHERE poll_id = ? AND selection_id = ?", (poll_id, "selection"+str(i)+"")).fetchall()[0][0]
-                selections["selection"+str(i)+"_voteTotal"] = cur.execute("SELECT COUNT(*) FROM votes WHERE poll_id = ?", (poll_id)).fetchall()[0][0]
- 
+                selections["selection"+str(i)+"_voteTotal"] = cur.execute("SELECT COUNT(*) FROM votes WHERE poll_id = ?", (poll_id,)).fetchall()[0][0]
             i += 1
         except:
             break
@@ -313,14 +315,15 @@ def start_poll():
                     request.form.get("max_selection"), request.form.get("last_date"), session["user_id"]))
                     
         creator = cur.execute("SELECT name, last_name FROM members WHERE id = ?", (session["user_id"],)).fetchall()
+        poll_id = cur.lastrowid
+        print(poll_id)
         
 
         cur.execute("INSERT INTO posts (extended_family_id, author, content, timestamp) VALUES(?, 1, ?, julianday('now'))", (session["family_id"], ""+str(creator[0]["name"])+" "+str(creator[0]["last_name"])+" has started a new poll. Last Date to vote is: "+request.form.get("last_date")+""))
 
         db.commit()
 
-        poll_id = cur.lastrowid
-        print(poll_id)
+
 
 
         
@@ -346,6 +349,9 @@ def start_poll():
 @app.route("/leave_family", methods=["POST", "GET"])
 def leave_family():
     cur.execute("UPDATE members SET extended_family_id = ? WHERE id = ?", (None, session["user_id"]))
+    db.commit()
+    left_user = cur.execute("SELECT name, last_name FROM members WHERE id = ?", (session["user_id"],)).fetchall()
+    cur.execute("INSERT INTO posts (extended_family_id, author, content, timestamp) VALUES(?, 1, ?, julianday('now'))", (session["family_id"], ""+str(left_user[0]["name"])+" "+str(left_user[0]["last_name"])+" has left the family."))
     db.commit()
     session["family_id"] = ""
     return redirect("/")
@@ -387,7 +393,7 @@ def register():
             errors["password"] = "Password must contain at least one of each following: letter (a-z), capital letter (A-Z), digit (0-9) and between 6-12 characters long "
         if not request.form.get("password"):
             errors["password"] = "Password is Required"
-        if not errors:
+        if not errors: 
             print("success")
 
             
@@ -423,7 +429,9 @@ def login():
             # If user entered username to login
             if request.form.get("login-name"):
                 try:
-                    user = (cur.execute("SELECT * FROM members WHERE login_name = ?", [request.form.get("login-name")]).fetchall())[0]
+                    login_name = (request.form.get("login-name")).rstrip()
+                    print(login_name)
+                    user = (cur.execute("SELECT * FROM members WHERE login_name = ?", (login_name,)).fetchall())[0]
                 except:
                     errors["login"] = "Username Not Found"
                     return render_template("login.html", errors=errors, form=request.form)
@@ -479,7 +487,7 @@ def send_email():
         server = smtplib.SMTP("smtp.office365.com", 587)
         server.starttls()
         server.login("mguzelkaralar@hotmail.com", "mM86974299")
-        # server.sendmail("mguzelkaralar@hotmail.com", "mguzelkaralar@hotmail.com", "asdasd")
+        
         server.send_message(msg)
         
 
@@ -538,7 +546,7 @@ def create_family():
         if request.form.get("password-confirmation") != request.form.get("password"):
             errors["password-confirmation"] = "Passwords do not match"
         if not request.form.get("password"):
-            errors["password"] = "Passwords is required"
+            errors["password"] = "Password is required"
         if not errors:
             cur.execute("INSERT INTO extended_families (name, login_name, password_hash, origin_country, origin_city, registration_date, admin1) VALUES (?, ?, ?, ?, ?, julianday('now'), ?)",
                         (request.form.get("family-name"), request.form.get("family-login-name"), generate_password_hash(request.form.get("password")), request.form.get("country"), request.form.get("city"),
@@ -580,6 +588,9 @@ def join_family():
                 cur.execute("UPDATE members SET extended_family_id = ? WHERE id = ?", (str(family["id"]), session["user_id"]))
                 db.commit()
                 session["family_id"] = family["id"]
+                new_comer = cur.execute("SELECT name, last_name FROM members WHERE id = ?", (session["user_id"],)).fetchall()
+                cur.execute("INSERT INTO posts (extended_family_id, author, content, timestamp) VALUES(?, 1, ?, julianday('now'))", (session["family_id"], ""+str(new_comer[0]["name"])+" "+str(new_comer[0]["last_name"])+" has joined the family."))
+                db.commit()
                 return redirect(url_for('index'))
             else:
                 return render_template("join_family.html", form=form, errors=errors)    

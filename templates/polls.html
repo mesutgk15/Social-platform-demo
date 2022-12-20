@@ -2,6 +2,9 @@
 
 {% block title %} - Polls {% endblock %}
 
+{%block body_id %}polls{% endblock %}
+
+
 {% block script %}
     <script src="{{url_for('static', filename='jquery.js')}}"></script>
     <script defer src="{{url_for('static', filename='modal.js')}}"></script>
@@ -27,23 +30,19 @@
 
 {% endif %}
 
-<div style="border: solid" class="container post-wrapper">
+<div class="container polls-header">
 
-    <div class="header">Polls</div>
+    <h2 class="polls-title">Polls</h2>
     <div>
-        <a href="{{ url_for('start_poll') }}" id="newPoll" class="btn btn-success m-3">Start a Poll</a>
-    </div>
-    <div style="border: solid" class="polls">
-
-
+        <a href="{{ url_for('start_poll') }}" id="newPoll" class="btn btn-success btn-sm m-3">Start New Poll</a>
     </div>
 </div>
 
 {% for poll in polls %}
 
-    <div class="container poll mb-5">
+    <div class="container poll mb-3 p-3">
         <div class="header d-flex flex-column mb-2 mt-3">
-            <h4 class="poll">Poll: {{poll["question"]}}</h4>
+            <h4 class="poll">{{poll["question"]}}</h4>
             <h5 class="poll">Active Until: {{poll["datetime(expires_on)"] | date }}</h5>
             <h5 class="poll">Max Choises Allowed: {{poll["max_selection"]}}</h5>
             <h6 class="poll">Created by: {{poll["creator_name"]}} {{poll["creator_last_name"]}}</h6>
