@@ -56,20 +56,14 @@ def index():
         errors = {}
         return render_template("index.html", form=form, errors=errors)
     
-    # Check if user has a family id
-    db = get_conn()
-    cur = db.cursor()
-    family_check = cur.execute("SELECT extended_family_id FROM members WHERE id = ?", (session['user_id'],)).fetchall()[0][0]
-    db.close()
-    try:
-        print(family_check)
-        return redirect(url_for('home', family_id=str(family_check)))
+    
+    return redirect(url_for('home'))
     
     # Any error on family part direct to home without login
-    except:
-        form = {}
-        errors = {}
-        return render_template("index.html", form=form, errors=errors)
+    # except:
+    #     form = {}
+    #     errors = {}
+    #     return render_template("index.html", form=form, errors=errors)
 
 # Convert os variables to a dict to be used in html templates. Will be used to check if user has a profile picture uploaded in relevant folder.
 @app.context_processor
@@ -77,21 +71,22 @@ def handle_context():
     return dict(os=os)
 
 
-@app.route("/home/<family_id>", methods=["POST", "GET"])
-def home(family_id):
+@app.route("/home", methods=["POST", "GET"])
+def home():
     # If there is no family id passed through url redirect to home
-    if family_id == "None":
-        return render_template("home.html")    
-    # Get family data for family's home page
-    else:
+
+    try:
+        family_id = session["family_id"]
+        # Get family data for family's home page
         db = get_conn()
         cur = db.cursor()
-        family = cur.execute("SELECT *, datetime(registration_date) FROM extended_families WHERE id = ?", (family_id)).fetchall()[0]
-        member_count = cur.execute("SELECT COUNT(extended_family_id) FROM members WHERE extended_family_id = ?", family_id).fetchall()[0][0]
+        family = cur.execute("SELECT *, datetime(registration_date) FROM extended_families WHERE id = ?", (family_id,)).fetchall()[0]
+        member_count = cur.execute("SELECT COUNT(extended_family_id) FROM members WHERE extended_family_id = ?", (family_id,)).fetchall()[0][0]
         db.close()
         date = (datetime.strptime(family["datetime(registration_date)"], '%Y-%m-%d %H:%M:%S') + timedelta(hours=3)).date()
         return render_template("family.html", family=family, member_count=member_count, date=date)
-
+    except:
+        return render_template("home.html")    
 
 @app.route("/home/family/list", methods=["GET", "POST"])
 def family_list():
@@ -371,6 +366,7 @@ def start_poll():
             slct = "selection-" + str(i)
             if request.form.get(slct):
                 selections.append(request.form.get(slct))
+
         # Handle requirements
         if not request.form.get("question"):
             flash("Type a Question")
@@ -413,8 +409,7 @@ def start_poll():
         return redirect("/polls")            
     else:
         form = {} 
-        selections = []
-        return render_template("start-poll.html", form=form, selections=selections)
+        return render_template("start-poll.html", form=form)
 
 
 
@@ -569,19 +564,22 @@ def send_email():
         # Generate 5 digit token
         token = random.randint(9999, 99999)
         # Send the token via email
-        msg = EmailMessage()
-        msg["Subject"] = "Confirm your email to get registered at COMMUNE !"
-        msg["From"] = "mguzelkaralar@hotmail.com"
-        msg["To"] = ["mguzelkaralar@hotmail.com"]
-        mail_out = render_template("mailout.html", token=token)
+
+        # !! EMAIL VERIFICATION SYSTEM IS DISABLED FOR DEMO PURPOSES BUT IT IS FUNCTIONAL. CAN CHECK THE TERMINAL FOR TOKEN NOW.
+        # msg = EmailMessage()
+        # msg["Subject"] = "Confirm your email to get registered at COMMUNE !"
+        # msg["From"] = "email here"
+        # form = session["form"]
+        # msg["To"] = form["email"]
+        # mail_out = render_template("mailout.html", token=token)
     
-        msg.add_alternative(mail_out, subtype="html")
+        # msg.add_alternative(mail_out, subtype="html")
         
-        server = smtplib.SMTP("smtp.office365.com", 587)
-        server.starttls()
-        server.login("mguzelkaralar@hotmail.com", "mM86974299")
+        # server = smtplib.SMTP("smtp.office365.com", 587)
+        # server.starttls()
+        # server.login("", "")
         
-        server.send_message(msg)
+        # server.send_message(msg)
         
         print("email sent")
 

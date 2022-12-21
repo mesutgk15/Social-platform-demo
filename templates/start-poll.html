@@ -65,6 +65,7 @@
                                 <input type="text" autocomplete="off" name="question" class="form-control" id="poll-question" value="{{form['question']}}">
                             </div>
                         </div>
+            </div>
             <div class="row form-group">
                     {% else %}
                         <div id="question-container" class="d-flex justify-content-center gap-5">
@@ -76,12 +77,11 @@
                             </div>
                         </div>
                     {% endif %}
-                </div>
             </div>
 
             <button class="btn btn-secondary btn-sm mt-3 mb-3" id="btn-add-selection" type="button">Add Selection</button>
             
-            <div class="selections">
+            <div class="row form-group selections">
             
                 {% for selection in selections %}
 
@@ -97,8 +97,6 @@
             
             <button id="btn-submit" class="btn btn-sm btn-success mt-5" type="submit">Create</button>
         </form>
-        
-
     </div>
 </div>
 

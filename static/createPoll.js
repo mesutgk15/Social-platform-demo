@@ -1,3 +1,4 @@
+// Add empty selection boxes
 $("#btn-add-selection").on("click", function(){
     rank = $(".selections").children().length;
     if (rank >= 24){
@@ -112,6 +113,7 @@ $(".get-poll").on("click", function(){
 }
 )
 
+// Limit the number of selections can be selected 
 function limit_selections (name, limit){
 
     let limit_var = limit;
@@ -130,15 +132,7 @@ forms.each(function(index, form){
     limit_selections(form['name'], $(this).attr('max-selection'))    
 })
 
-// limit_selections(key['name'], key['max-selection'])
 
-// 
-
-
-
-// $(document).on("change", "input[type=checkbox]", function(){    
-//     console.log($(this).val())
-// })
     
     
     
